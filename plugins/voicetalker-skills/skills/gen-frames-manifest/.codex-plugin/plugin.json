@@ -1,0 +1,18 @@
+{
+  "name": "gen-frames-manifest",
+  "version": "3.2.8",
+  "description": "Preserve all VoiceTalker Scribe scenes, clips, intro, outro, promos and ads; generate validated master-derived frames with actor-mouth coordinates and speech-bubble overlays.",
+  "author": {
+    "name": "Drew Anderson",
+    "email": "drewanderson@gmail.com"
+  },
+  "interface": {
+    "displayName": "gen-frames-manifest",
+    "developerName": "Drew Anderson",
+    "category": "Other",
+    "shortDescription": "Complete VoiceTalker Scribe frame authoring, broadcast preservation, alignment QC, mouth coordinates and speech bubbles.",
+    "longDescription": "Create and validate VoiceTalker Scribe image frame manifests and flipbook assets, preserving intro, ads, promos, outro, dialogue, TTS, actor mouth positions and optional speech-bubble overlays with verifiable mask-based alignment across 16:9, 9:16 or 1:1.",
+    "capabilities": [],
+    "defaultPrompt": null
+  }
+}

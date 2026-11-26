@@ -1,0 +1,43 @@
+{
+  "name": "voicetalker-skills",
+  "version": "3.2.8",
+  "description": "VoiceTalker Scribe skills: turn any document, brief, app or generated video into a finished, ready-to-record VoiceTalker Scribe, with voices, a media plan, screen capture, one merge, a code-review style Scribe reviewer, a soundscape designer, a video-critique subagent, Codeumentation, a menu and the VoiceTalker Agent Skills app for any LLM.",
+  "author": {
+    "name": "Drew Anderson",
+    "url": "https://centerbeam.ai"
+  },
+  "homepage": "https://voicetalker.ai",
+  "keywords": [
+    "voicetalker",
+    "scribe",
+    "text-to-speech",
+    "narration",
+    "teleprompter",
+    "video",
+    "skills",
+    "sound-design",
+    "critique",
+    "codeumentation",
+    "byollm"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "VoiceTalker Skills",
+    "shortDescription": "Turn documents, briefs, apps and videos into finished VoiceTalker Scribes.",
+    "longDescription": "VoiceTalker Scribe skills: turn any document, brief, app or generated video into a finished, ready-to-record VoiceTalker Scribe, with voices, a media plan, screen capture, one merge, a code-review style Scribe reviewer, a soundscape designer and a video-critique subagent, and a menu. Start with $menu.",
+    "developerName": "Centerbeam AI",
+    "category": "Productivity",
+    "capabilities": [],
+    "websiteURL": "https://voicetalker.ai",
+    "privacyPolicyURL": "https://voicetalker.ai/privacy",
+    "termsOfServiceURL": "https://voicetalker.ai/terms",
+    "defaultPrompt": [
+      "Open the VoiceTalker menu and pick a skill to run.",
+      "Turn my document into a VoiceTalker Scribe with voices for each speaker.",
+      "Review my Scribe and list what must be fixed before recording."
+    ],
+    "composerIcon": "./assets/voicetalker-ai-icon-48.png",
+    "logo": "./assets/voicetalker-ai-icon.png",
+    "brandColor": "#5033F5"
+  }
+}

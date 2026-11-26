@@ -1,0 +1,20 @@
+{
+  "name": "byollm",
+  "interface": {
+    "displayName": "BYOLLM: VoiceTalker Agent Skills"
+  },
+  "plugins": [
+    {
+      "name": "voicetalker-skills",
+      "source": {
+        "source": "local",
+        "path": "./plugins/voicetalker-skills"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

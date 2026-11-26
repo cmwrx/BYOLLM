@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VoiceTalker Agent Skills</title>
+<link rel="icon" href="assets/favicon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!--
+  Style: VoiceTalker steampunk: left rail menu, header bar, slim banner, main content zone, footer.
+  Textures: dark leather, brass edges, rivets, gears and parchment, in assets/ui.
+  Type: Cinzel for titles, Cormorant Garamond italic for sublines, Inter for body, IBM Plex Mono for commands.
+  Diagrams: dark riveted plates on parchment joined by copper arrows, drawn in SVG.
+  Layout: rail fixed on desktop, a drawer on phones; the banner is at most 7% of the window height; 44px tap targets.
+-->
+<style>
+:root{--brass:#c9973f;--brass2:#f0cf7a;--brass3:#8a6224;--copper:#b5652a;--ink:#2b1d10;--text:#efe2c4;--muted:#c7b18a;--violet:#8e74ff;--ok:#8fcf78;--warn:#e7a33c;--rail:280px;--hdr:60px}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#1c140d url(assets/ui/leather.jpg) repeat;color:var(--text);font:16px/1.55 Inter,system-ui,sans-serif;min-height:100vh}
+a{color:var(--brass2)}
+h1,h2,h3,.cz{font-family:Cinzel,serif;letter-spacing:.04em}
+.it{font-family:"Cormorant Garamond",serif;font-style:italic;color:var(--muted);font-size:1.12rem}
+.mono{font-family:"IBM Plex Mono",monospace}
+button,.btn{font:600 .92rem Inter,sans-serif;min-height:44px;padding:8px 16px;border-radius:10px;border:1px solid #5b3f18;cursor:pointer;color:#2a1a07;background:linear-gradient(180deg,var(--brass2),var(--brass) 55%,var(--brass3));box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 6px rgba(0,0,0,.5);text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+button:hover,.btn:hover{filter:brightness(1.08)}
+:focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+.ghost{background:rgba(0,0,0,.25);color:var(--brass2);border-color:#7a5626;box-shadow:none}
+.pill{border-radius:999px;border:2px solid var(--brass);background:rgba(0,0,0,.35);color:var(--text);font:600 .85rem Cinzel,serif;letter-spacing:.12em}
+input,select{font:500 1rem Inter,sans-serif;min-height:44px;width:100%;padding:10px 12px;border-radius:10px;border:1px solid #7a5626;background:rgba(10,6,3,.7);color:var(--text)}
+label{display:block;font-size:.85rem;color:var(--muted);margin:10px 0 4px}
+
+/* ---- rail ---- */
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail);z-index:30;display:flex;flex-direction:column;background:#17100a url(assets/ui/leather.jpg);border-right:3px solid transparent;border-image:linear-gradient(180deg,#f0cf7a,#8a6224 40%,#c9973f 70%,#5b3f18) 1;box-shadow:6px 0 18px rgba(0,0,0,.6);overflow-y:auto;overflow-x:hidden}
+.rail .topgear{display:block;margin:0 auto;width:152px;height:64px;object-fit:cover;opacity:.95}
+.rail .ttl{text-align:center;padding:2px 14px 0}
+.rail .ttl h1{margin:0;font-size:1.22rem;line-height:1.15;color:var(--brass2);text-shadow:0 2px 0 #000}
+.div{display:flex;align-items:center;gap:8px;margin:8px auto;width:80%}
+.div::before,.div::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,transparent,var(--brass),transparent)}
+.div svg{width:18px;height:18px}
+.rail .ttl .it{font-size:1.05rem;color:var(--text)}
+.rail .search{margin:12px 14px 8px;position:relative}
+.rail .search input{border-radius:10px;border:2px solid #6d4d1e;padding-left:38px}
+.rail .search svg{position:absolute;left:11px;top:13px;width:18px;height:18px}
+.rail nav a{display:flex;align-items:center;gap:14px;min-height:52px;margin:0 8px;padding:0 14px;color:var(--text);text-decoration:none;font:500 1.02rem "Cormorant Garamond",serif;font-size:1.15rem;border-bottom:1px solid rgba(201,151,63,.25)}
+.rail nav a svg{width:24px;height:24px;flex:none}
+.rail nav a.on{border:1px solid var(--brass);border-radius:8px;background:linear-gradient(180deg,#8a5a24,#5a3814);box-shadow:inset 0 1px 0 rgba(255,220,150,.4),0 2px 8px rgba(0,0,0,.6)}
+.rail .sk-h{margin:16px 22px 4px;font:700 .78rem Cinzel;letter-spacing:.16em;color:var(--brass)}
+.rail .bottom{margin-top:auto;text-align:center;padding-bottom:14px}
+.rail .bottom img{display:block;width:100%;height:auto}
+.rail .bottom a{font:600 1.2rem Cinzel,serif;color:var(--text);text-decoration:none;display:inline-flex;min-height:44px;align-items:center}
+.rail .bottom .it{font-style:normal;font-size:.95rem}
+/* tree in the rail */
+.tree{padding:0 10px}
+.tree ul{list-style:none;margin:0;padding-left:10px;border-left:1px dashed rgba(201,151,63,.35)}
+.tree>ul{padding-left:0;border:0}
+.tree details>summary{cursor:pointer;min-height:40px;display:flex;align-items:center;gap:6px;font:700 .72rem Cinzel;letter-spacing:.08em;color:var(--brass2);list-style:none;padding:0 6px}
+.tree details>summary::-webkit-details-marker{display:none}
+.tree details>summary::before{content:"\25B8";color:var(--brass)}
+.tree details[open]>summary::before{content:"\25BE"}
+.tree .sk{width:100%;min-height:40px;justify-content:flex-start;text-align:left;background:transparent;border:1px solid transparent;color:var(--text);box-shadow:none;font:500 .88rem Inter;padding:4px 8px;gap:8px}
+.tree .sk .n{font-family:"IBM Plex Mono";color:var(--brass);min-width:28px;font-size:.8rem}
+.tree .sk.on{border-color:var(--brass);background:rgba(201,151,63,.18)}
+.tree .sk.dim{opacity:.4}
+.tree .sk .done{margin-left:auto;color:var(--ok)}
+
+/* ---- main column ---- */
+.col{margin-left:var(--rail);min-height:100vh;display:flex;flex-direction:column}
+.hdr{position:sticky;top:0;z-index:20;height:var(--hdr);display:flex;align-items:center;gap:12px;padding:0 22px;background:#140d07 url(assets/ui/leather.jpg);border-bottom:2px solid var(--brass3);box-shadow:0 3px 12px rgba(0,0,0,.6)}
+.hdr .crumb{flex:1;min-width:0;font:500 1.05rem Cinzel,serif;letter-spacing:.12em;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr .sep{width:1px;height:30px;background:var(--brass3)}
+.menu-btn{display:none}
+.zone{flex:1;padding:14px 22px 10px}
+/* banner: never taller than 7% of the window */
+.banner{position:relative;height:7vh;max-height:7vh;min-height:0;display:flex;align-items:center;gap:12px;padding:0 70px 0 14px;border:2px solid var(--brass);border-radius:10px;overflow:hidden;background:linear-gradient(90deg,rgba(20,12,6,.92) 55%,rgba(20,12,6,.35)),url(assets/ui/banner-gears.jpg) right center/auto 260% no-repeat,#24180d;box-shadow:inset 0 0 0 1px rgba(0,0,0,.6),0 3px 10px rgba(0,0,0,.5)}
+.banner img.th{height:80%;width:auto;aspect-ratio:2063/762;object-fit:contain;flex:none}
+.banner .k{font:700 .66rem Cinzel;letter-spacing:.16em;color:var(--brass);white-space:nowrap}
+.banner .hk{font:700 clamp(.8rem,1.9vh,1.05rem) Cinzel;color:var(--brass2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.banner .go{min-height:0;height:72%;max-height:40px;padding:0 12px;font-size:.8rem;white-space:nowrap;flex:none}
+.banner .dots{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;gap:2px}
+.banner .dots button{min-height:0;width:14px;height:14px;padding:0;border-radius:50%;border:1px solid var(--brass2);background:transparent;box-shadow:none}
+.banner .dots button.on{background:var(--brass2)}
+.rv{position:absolute;width:7px;height:7px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe9a8,#a7782d 60%,#4a3112)}
+/* plates */
+.plate{position:relative;background:linear-gradient(160deg,rgba(58,40,22,.92),rgba(28,19,11,.95));border:2px solid #8a6224;border-radius:10px;padding:18px 20px;margin:14px 0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.6),inset 0 0 0 3px rgba(240,207,122,.12),0 6px 18px rgba(0,0,0,.55)}
+.plate>.rv:nth-of-type(1){top:7px;left:7px}.plate>.rv:nth-of-type(2){top:7px;right:7px}.plate>.rv:nth-of-type(3){bottom:7px;left:7px}.plate>.rv:nth-of-type(4){bottom:7px;right:7px}
+.plate h2{margin:0 0 4px;font-size:1.15rem;color:var(--brass2)}
+.eyebrow{display:flex;align-items:center;gap:12px;justify-content:center;font:600 .78rem Cinzel;letter-spacing:.2em;color:var(--text);margin-bottom:6px}
+.eyebrow::before,.eyebrow::after{content:"";width:40px;height:1px;background:var(--brass)}
+.title-xl{font:700 clamp(1.6rem,3.2vw,2.4rem) Cinzel;color:var(--brass2);text-align:center;margin:6px 0 2px;text-shadow:0 2px 0 #000}
+.lead{text-align:center;margin:0 0 10px}
+.diagram{position:relative;border:2px solid #b08a4a;border-radius:12px;background:url(assets/ui/parchment.jpg);box-shadow:inset 0 0 40px rgba(110,70,20,.35),0 6px 18px rgba(0,0,0,.5);padding:8px;overflow:hidden;margin:12px 0}
+.diagram .sl,.diagram .sr{position:absolute;top:50%;transform:translateY(-50%);height:80%;opacity:.4;mix-blend-mode:multiply;pointer-events:none;-webkit-mask-image:radial-gradient(closest-side,#000 55%,transparent);mask-image:radial-gradient(closest-side,#000 55%,transparent)}
+.diagram .sl{left:0}.diagram .sr{right:0}
+.diagram svg{position:relative;display:block;width:100%;height:auto}
+.diagram.wide{overflow-x:auto}.diagram.wide svg{min-width:900px}
+.wf{cursor:pointer}.wf:hover rect,.wf:focus rect{stroke-width:4}
+.wf:focus{outline:none}
+.diagram>.rv:nth-of-type(1){top:8px;left:8px}.diagram>.rv:nth-of-type(2){top:8px;right:8px}.diagram>.rv:nth-of-type(3){bottom:8px;left:8px}.diagram>.rv:nth-of-type(4){bottom:8px;right:8px}
+.grid{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:700px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{display:inline-block;font:600 .72rem Inter;padding:3px 8px;border-radius:999px;border:1px solid #7a5626;color:var(--brass2);background:rgba(0,0,0,.3)}
+.chip.ok{color:var(--ok);border-color:#4e7a3e}.chip.warn{color:var(--warn);border-color:#8a5b1a}.chip.sub2{color:#cbbcff;border-color:#5a49b0}
+.muted{color:var(--muted)}
+.note{font-family:"Cormorant Garamond",serif;font-style:italic;color:var(--muted);text-align:center;margin:8px 0}
+.seg{display:flex;border:1px solid #7a5626;border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{flex:1 1 auto;border-radius:0;border:0;border-right:1px solid #5b3f18;background:rgba(0,0,0,.3);color:var(--muted);box-shadow:none}
+.seg button.on{background:linear-gradient(180deg,var(--brass2),var(--brass));color:#2a1a07}
+.agent{position:relative;border:2px solid #8a6224;border-radius:10px;padding:14px 16px;background:linear-gradient(170deg,rgba(55,38,18,.95),rgba(24,16,9,.95));box-shadow:inset 0 0 0 1px rgba(0,0,0,.6)}
+.agent>.rv:nth-of-type(1){top:6px;left:6px}.agent>.rv:nth-of-type(2){top:6px;right:6px}.agent>.rv:nth-of-type(3){bottom:6px;left:6px}.agent>.rv:nth-of-type(4){bottom:6px;right:6px}
+.agent h3{margin:0;font-size:1.05rem;color:var(--brass2)}
+.step3{text-align:center}
+.step3 .eyebrow{font-size:.72rem}
+.step3 h3{margin:4px 0;color:var(--brass2);font-size:1.2rem}
+pre.cmd{white-space:pre-wrap;word-break:break-word;font:500 .85rem/1.5 "IBM Plex Mono",monospace;background:rgba(8,5,2,.85);border:1px solid #5b3f18;border-radius:10px;padding:12px;color:#f6deaa;margin:8px 0}
+ol.queue{padding-left:0;list-style:none;margin:8px 0;counter-reset:q}
+ol.queue li{counter-increment:q;display:flex;gap:6px;align-items:center;border:1px solid #5b3f18;border-radius:10px;padding:4px 6px;margin:6px 0;background:rgba(0,0,0,.3)}
+ol.queue li::before{content:counter(q);font-family:"IBM Plex Mono";color:var(--brass);min-width:22px;text-align:center}
+ol.queue li .t{flex:1;min-width:0}
+ol.queue li button{min-height:44px;min-width:44px;padding:0 8px}
+ol.queue li.done .t{text-decoration:line-through;color:var(--muted)}
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+ol.steps li{counter-increment:s;position:relative;padding:6px 0 6px 40px}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:4px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:700 .8rem Cinzel;color:#2a1a07;background:linear-gradient(180deg,var(--brass2),var(--brass))}
+ol.steps li.ask::before{background:linear-gradient(180deg,#c9b8ff,#7b5cff);color:#fff}
+.view{display:none}.view.on{display:block}
+footer{border-top:2px solid var(--brass3);background:rgba(10,6,3,.85);padding:10px 22px}
+footer .in{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:space-between;align-items:center;font-size:.9rem}
+footer a{display:inline-flex;align-items:center;min-height:44px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#2a1a07;border:1px solid var(--brass);color:var(--brass2);padding:10px 16px;border-radius:10px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50}
+.toast.on{opacity:1}
+.scrim{display:none}
+@media(max-width:959px){
+  .rail{transform:translateX(-102%);transition:transform .2s}
+  .rail.open{transform:none}
+  .scrim.on{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:25}
+  .col{margin-left:0}
+  .menu-btn{display:inline-flex}
+  .hdr{padding:0 12px}.hdr .crumb{font-size:.85rem;letter-spacing:.06em}.hdr .sep,.hdr .ug{display:none}
+  .zone{padding:10px 12px}
+  .banner{padding-right:84px}.banner .k{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="lth" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4b3420"/><stop offset=".5" stop-color="#2e1f12"/><stop offset="1" stop-color="#22170d"/></linearGradient><linearGradient id="vio" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3a8c"/><stop offset="1" stop-color="#241a4d"/></linearGradient><linearGradient id="cop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a5a26"/><stop offset="1" stop-color="#5c3214"/></linearGradient><linearGradient id="brs" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3d58a"/><stop offset=".45" stop-color="#b27e34"/><stop offset="1" stop-color="#e8c06a"/></linearGradient><radialGradient id="riv" cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#ffefb8"/><stop offset=".55" stop-color="#a7782d"/><stop offset="1" stop-color="#3d280e"/></radialGradient><filter id="sh" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".45"/></filter><marker id="ah" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0 0L12 6L0 12L3 6z" fill="#a4521c"/></marker>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="#e0b860" stroke-width="3" stroke-dasharray="2.2 1.6"/><circle cx="12" cy="12" r="5" fill="none" stroke="#e0b860" stroke-width="1.6"/><circle cx="12" cy="12" r="1.8" fill="#e0b860"/></symbol>
+</defs></svg>
+
+<aside class="rail" id="rail" aria-label="VoiceTalker Agent Skills menu">
+  <img class="topgear" src="assets/ui/rail-top-gear.jpg" alt="">
+  <div class="ttl">
+    <h1 id="r-title">VoiceTalker Agent Skills</h1>
+    <div class="div"><svg><use href="#i-gear"/></svg></div>
+    <div class="it" id="r-sub">Codeumentation&trade;</div>
+  </div>
+  <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="#efe2c4" stroke-width="2"><circle cx="10" cy="10" r="7"/><path d="M15 15l6 6"/></svg><input id="rq" placeholder="Search skills..." aria-label="Search skills"></div>
+  <nav id="nav">
+    <a href="#home" data-v="home"><svg viewBox="0 0 24 24" fill="none" stroke="#e0b860" stroke-width="1.6"><path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/></svg>Home</a>
+    <a href="#byollm" data-v="byollm"><svg viewBox="0 0 24 24" fill="none" stroke="#e0b860" stroke-width="1.6"><path d="M4 7h10M18 7h2M4 12h4M12 12h8M4 17h12M20 17h0"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="17" r="2"/></svg>BYOLLM Setup</a>
+    <a href="#skills" data-v="skills"><svg viewBox="0 0 24 24" fill="none" stroke="#e0b860" stroke-width="1.6"><path d="M4 5h7v14H4zM13 5h7v14h-7z"/></svg>Skills &amp; versions</a>
+    <a href="#scenarios" data-v="scenarios"><svg viewBox="0 0 24 24" fill="none" stroke="#e0b860" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg>Scenarios</a>
+    <a href="#codeumentation" data-v="codeumentation"><svg viewBox="0 0 24 24" fill="none" stroke="#e0b860" stroke-width="1.6"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg>Codeumentation&trade;</a>
+    <a href="#help" data-v="help"><svg viewBox="0 0 24 24" fill="none" stroke="#e0b860" stroke-width="1.6"><path d="M3 8l9-4 9 4-9 4zM3 12l9 4 9-4M3 16l9 4 9-4"/></svg>Help</a>
+  </nav>
+  <div class="sk-h">SKILLS MENU</div>
+  <div class="tree" id="tree"></div>
+  <div class="bottom">
+    <img src="assets/ui/rail-gears.jpg" alt="">
+    <a id="fCb" href="https://centerbeam.ai" target="_blank" rel="noopener">Centerbeam.ai</a>
+    <div class="div"><svg><use href="#i-gear"/></svg></div>
+    <div class="it">&copy; Centerbeam AI, 2026</div>
+  </div>
+</aside>
+<div class="scrim" id="scrim"></div>
+
+<div class="col">
+  <header class="hdr">
+    <button class="ghost menu-btn" id="menuBtn" aria-expanded="false" aria-controls="rail">Menu</button>
+    <div class="crumb" id="crumb">Bring Your Own LLM / Home</div>
+    <a class="btn pill ug" href="#help">HELP</a>
+    <span class="sep"></span>
+    <a class="btn" id="hSign" target="_blank" rel="noopener">Sign up free</a>
+  </header>
+
+  <div class="zone">
+    <div class="banner" id="banner" aria-roledescription="carousel" aria-label="Promotions"><span class="rv" style="top:4px;left:4px"></span><span class="rv" style="bottom:4px;left:4px"></span><div id="hero" style="display:contents"></div><div class="dots" id="heroDots"></div></div>
+
+<!-- HOME -->
+<section class="view" id="v-home">
+  <div class="eyebrow">HOW IT WORKS</div>
+  <div class="title-xl">From your story to a finished episode</div>
+  <p class="lead">You bring the story and the AI you already use. The skills do the rest.</p>
+  <div class="diagram" id="easyDiagram"></div>
+  <details class="plate adv"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span>
+    <summary class="cz" style="cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--brass2)">Advanced: see where every skill fits</summary>
+    <p class="it">Each plate is one skill. Tap a plate to open it.</p>
+    <div class="diagram wide" id="wfDiagram"></div>
+  </details>
+  <div class="plate"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span>
+    <div class="grid g2">
+      <div><label for="group">Skill group</label><select id="group"></select><p style="margin:6px 0 0"><a href="#skills">View skills &amp; versions</a></p></div>
+      <div><label for="folder">Project folder</label><input id="folder" placeholder="e.g. ~/VoiceTalker/my-story" autocomplete="off"><div class="muted" style="font-size:.8rem;margin-top:4px">Your agent saves every new file here. The page never reads your disk.</div></div>
+    </div>
+    <label>Scribe stage</label>
+    <div class="seg" id="stage" role="group" aria-label="Scribe stage"></div>
+  </div>
+  <div class="plate"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span>
+    <h2>What do you have?</h2><div class="it">Pick what is in your hands; the right skill opens with its questions ready.</div>
+    <div class="row" id="starter" style="margin-top:10px"></div>
+  </div>
+  <div class="grid g2" style="align-items:start">
+    <div class="plate" id="runPlate"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span><h2 id="runTitle">Run a skill</h2><div id="run"></div></div>
+    <div class="plate"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span>
+      <h2>Your run order</h2><div class="it">Any order, any number of times. Add skills, move them, tick them off.</div>
+      <ol class="queue" id="queue"></ol><div class="row"><button class="ghost" id="qClear">Clear the list</button></div>
+    </div>
+  </div>
+  <div class="plate"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span>
+    <h2>Your agents</h2><div class="it">Bring your own LLM. Agent 1 writes, Agent 2 reviews, subagents critique.</div>
+    <div class="grid g3" id="agents" style="margin-top:12px"></div>
+  </div>
+  <p class="note">Review and confirm before running. Every skill saves a new file; nothing is overwritten.</p>
+</section>
+
+<!-- SKILLS -->
+<section class="view" id="v-skills">
+  <div class="plate"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span><h2>Skills &amp; versions</h2><div class="it" id="verLine"></div>
+    <input id="q" placeholder="Search skills" aria-label="Search skills" style="max-width:360px;margin-top:10px"></div>
+  <div class="grid g2" id="skillCards"></div>
+</section>
+
+<!-- BYOLLM -->
+<section class="view" id="v-byollm">
+  <div class="eyebrow">BRING YOUR OWN LLM</div>
+  <div class="title-xl">BYOLLM Setup</div>
+  <p class="lead it">Get the skills, install them in your agent, check that it worked.</p>
+  <div class="plate"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span>
+    <ol class="steps">
+      <li><b>Get the skills.</b> Download the latest VoiceTalker skills release (the .plugin file and the zip), or use the <span class="mono">SKILLS</span> folder in your project. <a id="dlLink" target="_blank" rel="noopener">VoiceTalker skills package</a></li>
+      <li><b>Install them in your agent.</b> Open your agent below and follow its steps; copy any command with one tap.</li>
+      <li><b>Check that it worked.</b> In a new chat ask the check question. <button class="ghost" data-copy="What skills do you have for VoiceTalker?">Copy the check question</button></li>
+    </ol>
+  </div>
+  <div class="plate"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span>
+    <h2>Roles</h2><div class="it">The menu sends writing skills to Agent 1 and review skills to Agent 2.</div>
+    <div class="grid g2"><div><label for="a1">Agent 1: writes and builds</label><select id="a1"></select></div><div><label for="a2">Agent 2: reviews and critiques</label><select id="a2"></select></div></div>
+    <p class="muted" id="sameWarn" style="display:none">Agent 1 and Agent 2 are the same agent. Reviews are more independent when a different agent, or a fresh session, does them.</p>
+  </div>
+  <div id="byoAgents"></div>
+  <div class="plate"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span>
+    <h2>Any other LLM</h2><div class="it">Add an agent that is not listed; it works the plain-instructions way.</div>
+    <div class="grid g2"><div><label for="cName">Name</label><input id="cName" placeholder="e.g. Mistral Le Chat"></div><div><label for="cUrl">Address (optional)</label><input id="cUrl" placeholder="https://..."></div></div>
+    <label for="cCall">How it calls a skill (use {skill})</label><input id="cCall" value="Follow the instructions in {skill}/SKILL.md exactly.">
+    <div class="row" style="margin-top:10px"><button id="cAdd">Add agent</button></div>
+  </div>
+</section>
+
+<!-- SCENARIOS -->
+<section class="view" id="v-scenarios">
+  <div class="eyebrow">STEP BY STEP</div>
+  <div class="title-xl">Scenarios</div>
+  <p class="lead it">Step-by-step routes through the skills. Copper plates are yours to decide. Load one into your run order.</p>
+  <div id="scenList"></div>
+</section>
+
+<!-- CODEUMENTATION -->
+<section class="view" id="v-codeumentation">
+  <div class="eyebrow">A VOICETALKER DISCIPLINE</div>
+  <div class="title-xl">Codeumentation&trade;</div>
+  <p class="lead" id="codDef"></p>
+  <div class="row" style="justify-content:center"><button data-copy="update the codeumentation">Copy the command</button><button class="ghost" id="codRun">Open skill 17</button></div>
+  <div class="diagram" id="codDiagram"></div>
+  <div class="plate"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span><h2>How to use it</h2><ol class="steps" id="codHow"></ol></div>
+</section>
+
+<!-- HELP -->
+<section class="view" id="v-help">
+  <div class="eyebrow" id="h-intro">HELP</div>
+  <div class="title-xl">The VoiceTalker flow</div>
+  <p class="lead">Six steps, from setup to your first recording.</p>
+  <p class="lead it">A <b>Scribe</b> is your script, split into scenes and short lines, with a voice for each speaker.</p>
+  <div class="diagram" id="flowDiagram"></div>
+  <div class="plate" id="h-ref"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span>
+    <h2>Reference</h2>
+    <ol class="steps">
+      <li>Every skill saves a new file next to your input and raises the version (my-story-scribe-v1.00.json, then v1.01). Nothing is overwritten.</li>
+      <li>Basic skills need no Python. Advanced skills need Python 3.8 or later; the screen skills also need Chrome and Pillow, and the video skill ffmpeg.</li>
+      <li>Subagent skills (soundscape, film-critic, the Codeumentation gap check) run as independent subagents where the agent supports them, and say so when they run inline.</li>
+      <li>The Scribe is a plain JSON file. Open it in VoiceTalker Studio to voice it, add pictures and sound, and record the MP3 or MP4.</li>
+      <li>This page keeps your settings in this browser only. It never reads your files and never sends your settings or prompts anywhere; only the fonts load from Google Fonts.</li>
+    </ol>
+  </div>
+</section>
+  </div>
+
+  <footer><div class="in"><span class="it" style="font-style:normal">VoiceTalker Agent Skills <span id="fVer"></span></span><span id="fLinks"></span></div></footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script id="vt-data" type="application/json">{"meta":{"title":"VoiceTalker Agent Skills","subtitle":"Codeumentation™","tagline":"Bring your own LLM","version":"3.2.8","vt":"1.08","plugin":"voicetalker-skills"},"links":{"site":"https://voicetalker.ai","signup":"https://voicetalker.ai/sign-up","pricing":"https://voicetalker.ai/pricing","whatsnew":"https://voicetalker.ai/whats-new","help":"https://voicetalker.ai/app#help-skills","privacy":"https://voicetalker.ai/privacy","terms":"https://voicetalker.ai/terms","centerbeam":"https://centerbeam.ai","skills":"https://github.com/cmwrx/BYOLLM/releases/latest","repo":"https://github.com/cmwrx/BYOLLM"},"hero":[{"id":"byollm","kicker":"","hook":"Portable Agent Skills for MultiMedia Storytelling","text":"Claude, ChatGPT, Codex, Gemini, Grok or Copilot: plug the one you use into the VoiceTalker Agent Skills and turn any story into a finished, voiced Scribe.","cta":"Set up my agents","go":"byollm","thumb":"assets/VoiceTalker-AI-logo-animated.svg"},{"id":"signup","kicker":"VoiceTalker account","hook":"Every voice, every picture, one free account.","text":"The skills write the Scribe; VoiceTalker Studio voices it, illustrates it and records it. Start on the Free plan.","cta":"Sign up free","url":"https://voicetalker.ai/sign-up","thumb":"assets/VoiceTalker-AI-logo-animated.svg"},{"id":"critic","kicker":"New in 3.2.8","hook":"Two thumbs up, or back to the edit.","text":"The video-critique subagent reviews your episode, you approve the fixes, and the balcony review scores the new cut, loop after loop.","cta":"Open the critique skill","skill":"film-critic","thumb":"assets/VoiceTalker-AI-logo-animated.svg"},{"id":"sound","kicker":"New in 3.2.8","hook":"Hear the storm before you see it.","text":"The soundscape subagent plans ambience, foley, music and silence for every scene, with a prompt for every sound to make.","cta":"Open the soundscape skill","skill":"soundscape","thumb":"assets/VoiceTalker-AI-logo-animated.svg"}],"agents":[{"id":"chatgpt","name":"ChatGPT","kind":"Chat app","call":"@{skill}","launch":"https://chatgpt.com/","q":"https://chatgpt.com/?q=","sub":"No subagents: the subagent skills run in the same chat and say the review is not independent.","install":["Skills in ChatGPT are a beta a workspace owner turns on in workspace settings.","Upload each skill folder as a zip (one top-level folder with its SKILL.md).","If skill upload is not available: open a Project, upload the SKILL.md files, and start with: Follow the instructions in scribe/SKILL.md exactly.","The Python checks and the two screen-cap skills need Claude Code or Codex on your own computer."],"verified":"Not yet run by Centerbeam in ChatGPT."},{"id":"claude","name":"Claude","kind":"Claude app, claude.ai and Claude Code","call":"/voicetalker-skills:{skill}","launch":"https://claude.ai/new","q":"https://claude.ai/new?q=","sub":"Subagents supported: soundscape, film-critic and the Codeumentation gap check run as independent subagents.","install":["Claude Code: claude plugin marketplace add cmwrx/BYOLLM, then claude plugin install voicetalker-skills@byollm.","Claude app or claude.ai: download voicetalker-skills.plugin from github.com/cmwrx/BYOLLM/releases/latest and open it; the app installs it with one button.","From a downloaded copy of the repository: claude plugin marketplace add ./BYOLLM (its folder) instead.","Install the plugin or the loose skill folders, never both."],"cmd":"claude plugin marketplace add cmwrx/BYOLLM\nclaude plugin install voicetalker-skills@byollm","verified":"Plugin layout checked against Claude's manifest reference."},{"id":"codex","name":"Codex","kind":"OpenAI Codex CLI, IDE or app","call":"${skill}","launch":"","sub":"Check your Codex version for subagents; without them the subagent skills run inline and say so.","install":["Run: codex plugin marketplace add cmwrx/BYOLLM, then install VoiceTalker Skills from the BYOLLM marketplace in the plugin directory.","Or copy the skill folders into ~/.agents/skills/ (all projects) or <project>/.agents/skills/.","Restart Codex if the skills do not show up.","If descriptions get shortened, install only the skills you use or raise skills.max_context_tokens in ~/.codex/config.toml."],"cmd":"codex plugin marketplace add cmwrx/BYOLLM","verified":"Not yet run by Centerbeam in Codex."},{"id":"gemini","name":"Gemini","kind":"Gemini app or Gemini CLI","call":"Follow the instructions in {skill}/SKILL.md exactly.","launch":"https://gemini.google.com/app","sub":"Subagents not confirmed: the subagent skills run inline and say so.","install":["Add the SKILL.md files to a Gem or a project as knowledge files.","Start each step with: Follow the instructions in scribe/SKILL.md exactly.","Writing steps work this way; the Python checks need a host that runs Python."],"verified":"Not yet run by Centerbeam in Gemini."},{"id":"grok","name":"Grok","kind":"Grok Build CLI, grok.com","call":"/{skill}","launch":"https://grok.com/","sub":"Subagents not confirmed: the subagent skills run inline and say so.","install":["Grok Build reads skills from ~/.grok/skills/, ./.grok/skills/ and ~/.agents/skills/, and reads Claude Code's skills too.","Skills you installed for Claude Code or Codex should load without copying again.","grok.com Skills: the file format is not published yet."],"verified":"Not yet run by Centerbeam in Grok."},{"id":"copilot","name":"Copilot","kind":"GitHub or Microsoft Copilot","call":"Follow the instructions in {skill}/SKILL.md exactly.","launch":"https://copilot.microsoft.com/","sub":"Subagents not confirmed: the subagent skills run inline and say so.","install":["Add the SKILL.md files to your workspace or chat as reference files.","Start each step with: Follow the instructions in scribe/SKILL.md exactly.","Writing steps work this way; the Python checks need a host that runs Python."],"verified":"Not yet run by Centerbeam in Copilot."}],"groups":[["all","All skills"],["write","Write the Scribe"],["picture","Pictures and media"],["sound","Sound and music"],["review","Review and critique"],["record","Capture and video"],["maintain","Maintain"]],"stages":[["write","Write"],["picture","Picture"],["sound","Sound"],["review","Review"],["record","Record"],["maintain","Maintain"]],"menu":[{"label":"Basic","note":"no Python needed","items":["scribe-wizard","comic-strip","existing-images","characters","scribe","scribe-reviewer"]},{"label":"Advanced","note":"Python 3.8 or later, except the subagents","children":[{"label":"Add pictures and media","items":["image-manifest","merge-media","gen-svg","gen-gpt-images","gen-frames-manifest"]},{"label":"Capture a real app","note":"also Chrome and Pillow","items":["screen-cap","screen-cap-video"]},{"label":"Video into a Scribe","items":["videotalker-import"]},{"label":"Sound and music","items":["soundscape"]},{"label":"Critique and repair","items":["film-critic","film-critic-balcony"]},{"label":"Maintain","items":["codeumentation"]}]}],"skills":{"scribe-wizard":{"n":"1","name":"scribe-wizard","title":"Fast Scribe from a brief","desc":"A short questionnaire turns a brief or goals file into a complete Scribe with 1 to 3 speakers.","role":"writer","py":false,"stages":["write"],"params":[{"k":"brief","label":"Brief or goals file","req":true,"ph":"my-brief.md, or: I will describe it now"},{"k":"out","label":"Output folder","req":false,"ph":"next to the brief"}]},"comic-strip":{"n":"2","name":"comic-strip","title":"Comic Scribe","desc":"Builds a numbered comic Scribe from a panel script or idea, with intro and outro and strict panel order.","role":"writer","py":false,"stages":["write"],"params":[{"k":"script","label":"Panel script or idea","req":true,"ph":"my-comic-panels.md"},{"k":"cast","label":"Cast file","req":false,"ph":"my-comic-cast.md"}]},"existing-images":{"n":"3","name":"existing-images","title":"Your own pictures","desc":"Places photos, scans and screen shots you already own into a Scribe, without making new art.","role":"writer","py":false,"stages":["picture"],"params":[{"k":"scribe","label":"Scribe","req":true,"ph":"my-story-scribe-v1.00.json"},{"k":"pics","label":"Pictures (folder or list)","req":true,"ph":"pictures/"},{"k":"shape","label":"Orientation","req":false,"ph":"","opts":["16:9","9:16"],"dflt":"16:9"}]},"characters":{"n":"4","name":"characters","title":"The cast","desc":"Finds every speaker and writes a reusable cast file: voices, delivery, looks and staging.","role":"writer","py":false,"stages":["write"],"params":[{"k":"input","label":"Input file","req":true,"ph":"my-story.docx"},{"k":"cast","label":"Earlier cast file to reuse","req":false,"ph":"series-cast.md"}]},"scribe":{"n":"5","name":"scribe","title":"Document to Scribe","desc":"Turns a document or story into a complete Scribe: scenes, short clips, voices, optional intro and outro.","role":"writer","py":false,"stages":["write"],"params":[{"k":"input","label":"Input file","req":true,"ph":"my-story.txt"},{"k":"cast","label":"Cast file","req":false,"ph":"my-story-cast.md"}]},"scribe-reviewer":{"n":"6","name":"scribe-reviewer","title":"Code-review a Scribe","desc":"Finds, verifies and ranks defects in schema, voices, tags, pictures and source coverage. Read-only unless you ask for fixes. Run it in a fresh session.","role":"critic","py":false,"stages":["review"],"params":[{"k":"scribe","label":"Scribe","req":true,"ph":"my-story-scribe-v1.00.json"},{"k":"source","label":"Source it was made from","req":false,"ph":"my-story.txt"},{"k":"effort","label":"Effort","req":false,"ph":"","opts":["low","medium","high","max"],"dflt":"medium"}]},"image-manifest":{"n":"7","name":"image-manifest","title":"The media plan","desc":"Plans the media for every scene and clip: generated pictures, screen shots, your files, video, or none, with a final prompt for each picture.","role":"writer","py":true,"stages":["picture"],"params":[{"k":"scribe","label":"Scribe","req":true,"ph":"my-story-scribe-v1.00.json"},{"k":"cast","label":"Cast file","req":false,"ph":"my-story-cast.md"}]},"merge-media":{"n":"8","name":"merge-media","title":"One merge","desc":"Writes the next Scribe version with every picture, shot, sound and video from the plan, leaving every word, voice and ID untouched.","role":"writer","py":true,"stages":["picture"],"params":[{"k":"scribe","label":"Scribe","req":true,"ph":"my-story-scribe-v1.00.json"},{"k":"plan","label":"Media plan or cut sheet","req":true,"ph":"my-story-image-manifest.md"}]},"gen-svg":{"n":"9","name":"gen-svg","title":"Animated SVG pictures","desc":"Makes animated SVG backgrounds of people, places, things, scenes and title cards.","role":"writer","py":true,"stages":["picture"],"params":[{"k":"from","label":"From","req":true,"ph":"my-story-cast.md, the Scribe, or a description"}]},"gen-gpt-images":{"n":"10","name":"gen-gpt-images","title":"ChatGPT picture prompts","desc":"An indexed ChatGPT prompt set from the media plan, with key frames so every character and place looks the same.","role":"writer","py":true,"stages":["picture"],"params":[{"k":"plan","label":"Media plan","req":true,"ph":"my-story-image-manifest.md"},{"k":"fmt","label":"Format","req":false,"ph":"","opts":["jpg","png"],"dflt":"jpg"}]},"gen-frames-manifest":{"n":"11","name":"gen-frames-manifest","title":"Flipbook frames","desc":"Timed flipbook frames and single-frame holds for each clip. Type n for the next clip.","role":"writer","py":true,"stages":["picture"],"params":[{"k":"scribe","label":"Scribe or frames manifest","req":true,"ph":"my-story-scribe-v1.01.json"},{"k":"shape","label":"Aspect ratio","req":false,"ph":"","opts":["16:9","9:16","1:1"],"dflt":"16:9"}]},"screen-cap":{"n":"12","name":"screen-cap","title":"Screen shots of an app","desc":"Screen shots of any web app, each tied to its clip and checked with you one shot at a time. Needs Chrome and Pillow.","role":"writer","py":true,"stages":["record"],"params":[{"k":"plan","label":"Media plan","req":true,"ph":"my-howto-image-manifest.md"},{"k":"scribe","label":"Scribe","req":true,"ph":"my-howto-scribe-v1.00.json"},{"k":"url","label":"App address","req":true,"ph":"http://localhost:5001"}]},"screen-cap-video":{"n":"13","name":"screen-cap-video","title":"Screen video of an app","desc":"MP4 of a live app timed to the narration, with zoom, pan and highlights, plus the cut sheet merge-media reads. Needs Chrome, Pillow and ffmpeg.","role":"writer","py":true,"stages":["record"],"params":[{"k":"scribe","label":"Scribe","req":true,"ph":"my-howto-scribe-v1.00.json"},{"k":"url","label":"App address and port","req":true,"ph":"http://localhost:5001"}]},"videotalker-import":{"n":"14","name":"videotalker-import","title":"VideoTalker into a Scribe","desc":"Turns a VideoTalker scene list into a media cut sheet, one cut per scene on the clip that speaks it.","role":"writer","py":true,"stages":["record"],"params":[{"k":"scenes","label":"Scene list","req":true,"ph":"video-scene.json"},{"k":"scribe","label":"Scribe","req":true,"ph":"my-story-scribe-v1.00.json"}]},"soundscape":{"n":"15","name":"soundscape","title":"A full soundscape","desc":"Runs as a subagent sound designer: plans layered ambience, foley, effects, music, silence and fades for a Scribe or a sound brief, with a prompt for every new sound. Never changes a sound already there.","role":"critic","py":false,"sub":true,"stages":["sound"],"params":[{"k":"source","label":"Source","req":true,"ph":"my-story-scribe-v1.00.json, a URL, or leave blank for this chat"},{"k":"run","label":"Run timings","req":false,"ph":"run.txt or .srt from a completed run"},{"k":"apply","label":"Apply","req":false,"ph":"","opts":["no","yes"],"dflt":"no"}]},"film-critic":{"n":"16","name":"film-critic","title":"Video critique","desc":"Runs as a video-critique subagent on a Scribe, a recorded video, a screenplay or a video brief. Mode loop: critique, the changes you approve, review again, until you are satisfied.","role":"critic","py":false,"sub":true,"stages":["review"],"params":[{"k":"source","label":"Source","req":true,"ph":"my-story-scribe-v1.00.json, a URL, or leave blank for this chat"},{"k":"mode","label":"Mode","req":false,"ph":"","opts":["critique","loop"],"dflt":"critique"},{"k":"notes","label":"Your change notes","req":false,"ph":"anything you want changed next"}]},"film-critic-balcony":{"n":"16B","name":"film-critic","mode":"balcony","title":"Balcony review (Siskel & Ebert style)","desc":"Two invented critics debate the work, each gives a thumbs up or down and 1-to-10 scores, and the final edit score (0 to 100) is kept across loops.","role":"critic","py":false,"sub":true,"stages":["review"],"params":[{"k":"source","label":"Source","req":true,"ph":"my-story-scribe-v1.00.json, a URL, or leave blank for this chat"}]},"codeumentation":{"n":"17","name":"codeumentation","title":"Codeumentation™","desc":"Brings every code and document file a change touches up to date in one pass, then a subagent checks for gaps.","role":"writer","py":false,"stages":["maintain"],"params":[{"k":"change","label":"The change","req":false,"ph":"leave blank for this chat's changes"},{"k":"root","label":"Project root","req":false,"ph":"the project open in this session"},{"k":"mode","label":"Mode","req":false,"ph":"","opts":["apply","list"],"dflt":"apply"},{"k":"version","label":"Version","req":false,"ph":"keep, or a new number such as 3.2.9"}]}},"start":[["A document, story, lesson or script","scribe"],["A few lines of idea","scribe-wizard"],["A comic script","comic-strip"],["Pictures you own","existing-images"],["A Scribe that needs pictures","image-manifest"],["A Scribe about a real app","screen-cap"],["A Scribe to check","scribe-reviewer"],["An episode that needs fuller sound","soundscape"],["An episode to critique and improve","film-critic"],["A change to write up everywhere","codeumentation"]],"scenarios":[{"n":1,"title":"A document or story becomes a finished, illustrated Scribe","intro":"","steps":[{"t":"Which file, and is there a cast file or an earlier Scribe?","ask":true,"skills":[]},{"t":"INTRO and OUTRO: include both, one, or neither?","ask":true,"skills":[]},{"t":"Optional: characters on the file; answer the look, cast and voice questions; keep …-cast.md.","ask":false,"skills":["characters"]},{"t":"scribe on the file (with the cast file). Read the report: title, subtitle, closing line, voices.","ask":false,"skills":["scribe"]},{"t":"Optional: scribe-reviewer on the Scribe and the source file, in a new session. Fix anything under NEEDS FIXES before going on.","ask":false,"skills":["scribe-reviewer"]},{"t":"image-manifest on the Scribe. picture rule and orientation, shown with their counts.","ask":true,"skills":["image-manifest"]},{"t":"merge-media on the Scribe and the manifest. Confirm RESULT PASS.","ask":false,"skills":["merge-media"]},{"t":"In VoiceTalker: File, Open from File, pick the new file; confirm the picture count; Batch Media, Start; Save; Create & Play.","ask":true,"skills":[]}]},{"n":2,"title":"A quick 1 to 3 speaker Scribe from a few lines","intro":"","steps":[{"t":"Write or paste a brief (topic, speakers, mood) into a .md.","ask":false,"skills":[]},{"t":"scribe-wizard on it; answer only the unanswered questions, or say defaults.","ask":false,"skills":["scribe-wizard"]},{"t":"Optional: steps 2 and 3 of scenario 1 on its Scribe for pictures.","ask":false,"skills":[]},{"t":"Open in VoiceTalker and run.","ask":false,"skills":[]}]},{"n":3,"title":"A comic strip","intro":"","steps":[{"t":"Write the panel script (numbered panels, speakers, dialogue).","ask":false,"skills":[]},{"t":"comic-strip on it; keep the mandatory intro and outro.","ask":false,"skills":["comic-strip"]},{"t":"image-manifest, then merge-media, with the comic's orientation.","ask":false,"skills":["image-manifest","merge-media"]},{"t":"Batch Media in VoiceTalker.","ask":false,"skills":[]}]},{"n":4,"title":"A series with the same cast every episode","intro":"","steps":[{"t":"First episode: scenario 1 with characters; keep the cast file.","ask":false,"skills":["characters"]},{"t":"Next episode: scribe and image-manifest with the same cast file; speakers not in the cast get default voices and are reported.","ask":false,"skills":["image-manifest","scribe"]},{"t":"Never change a cast voice or look to fix a problem; report it and decide.","ask":false,"skills":[]},{"t":"Optional: gen-svg with the cast file for matching animated pictures.","ask":false,"skills":["gen-svg"]}]},{"n":5,"title":"Pictures you already own","intro":"","steps":[{"t":"scribe (or an existing Scribe).","ask":false,"skills":["scribe"]},{"t":"existing-images with the folder of pictures: inventory, matching to scenes and clips, orientation.","ask":false,"skills":["existing-images"]},{"t":"Approve any resize or recomposition; originals stay unchanged.","ask":true,"skills":[]},{"t":"Import the images in VoiceTalker and attach them; the skill never invents image IDs.","ask":false,"skills":[]}]},{"n":6,"title":"A How-To Scribe about the app, with real screen shots","intro":"","steps":[{"t":"Is the narration already a Scribe? If it is a .md with a JSON block, copy that block to a .json next to it (no other change). Otherwise run scribe.","ask":true,"skills":["scribe"]},{"t":"Is there a shot list to follow? If so, give it; the skill aligns to it.","ask":true,"skills":[]},{"t":"App address and port, and where to store the pictures.","ask":true,"skills":[]},{"t":"screen-cap: approve the shot list, sign in in the separate Chrome window, let it capture, look at each shot.","ask":false,"skills":["screen-cap"]},{"t":"In VoiceTalker: open the Scribe and press Load picture or video.","ask":false,"skills":[]}]},{"n":7,"title":"The same How-To as screen video","intro":"","steps":[{"t":"Steps 1 to 3 of scenario 6 (Scribe, shot list, address, folder).","ask":false,"skills":[]},{"t":"Real run lengths (a -completed.json) or estimates?","ask":true,"skills":[]},{"t":"screen-cap-video: answer the eight questions (or defaults), approve …-video-plan.md, sign in, render one file at a time.","ask":false,"skills":["screen-cap-video"]},{"t":"Check each file (RESULT PASS) and look at the contact sheet; re-render only weak scenes.","ask":false,"skills":[]},{"t":"Reload the Scribe in the capture window if scene beats typed text; the skill closes the browser at the end.","ask":false,"skills":[]},{"t":"The skill writes …-video-manifest.md next to the Scribe (one cut per scene file, attached to the scene); keep the videos under the Scribe's folder.","ask":false,"skills":[]},{"t":"merge-media on the Scribe and the cut sheet; open the merged Scribe in VoiceTalker and press Load picture or video (one button loads pictures and videos), which loads the files and stores them like pictures, against your file storage. Do not assume a video plays until you have played it in VoiceTalker.","ask":false,"skills":["merge-media"]}]},{"n":8,"title":"Videos generated in VideoTalker, onto the Scribe","intro":"","steps":[{"t":"Build the Scribe from the same narration as the VideoTalker scene list (scenario 1 or 2).","ask":false,"skills":[]},{"t":"Which scene list, which Scribe, final or draft files.","ask":true,"skills":[]},{"t":"videotalker-import; read the table and the Not placed list; use --map for interstitials.","ask":false,"skills":["videotalker-import"]},{"t":"merge-media on the Scribe and the cut sheet; confirm RESULT PASS and read the warnings.","ask":false,"skills":["merge-media"]},{"t":"Keep the videos under the Scribe's folder so VoiceTalker can load them from the project folder.","ask":false,"skills":[]},{"t":"Open the merged Scribe in VoiceTalker and press Load picture or video in the scene's or clip's Picture box (or tick Load these files when I press Start in Batch Media); it loads the files and stores them like pictures, against your file storage.","ask":false,"skills":[]},{"t":"Play it; confirm a clip that has no video of its own still shows the previous clip's video (not yet verified in the app).","ask":false,"skills":[]}]},{"n":9,"title":"Words change after pictures were made","intro":"","steps":[{"t":"Did you edit in VoiceTalker since the file on disk was saved? If yes, save from VoiceTalker first.","ask":true,"skills":[]},{"t":"scribe in normalize mode on that Scribe (next version).","ask":false,"skills":["scribe"]},{"t":"image-manifest again; merge-media again. If pictures were already attached, say whether to attach new prompts (the old pictures become unattached).","ask":true,"skills":["image-manifest","merge-media"]},{"t":"Batch Media; save.","ask":false,"skills":[]}]},{"n":10,"title":"Add animated backgrounds","intro":"","steps":[{"t":"Any Scribe plus its cast file or manifest.","ask":false,"skills":[]},{"t":"gen-svg: choose what to make, the size, motion and loop length.","ask":false,"skills":["gen-svg"]},{"t":"Upload the .svg files in Background and Logo and pick them as Global, scene or clip backgrounds.","ask":false,"skills":[]}]},{"n":11,"title":"Add video to a Scribe that is already illustrated","intro":"","steps":[{"t":"Start from the merged Scribe (…-scribe-v1.01.json) before Batch Media has generated its pictures: its backgroundImageId values are still empty, so the merge can write into them.","ask":false,"skills":[]},{"t":"Scenario 8 steps 2 to 7 on it. The prompts stay on their clips.","ask":false,"skills":["videotalker-import","merge-media"]},{"t":"A place that already holds a generated image id stops the merge and asks; it is never replaced on its own. A place with a file: value shows that file; whether Batch Media skips such a place is not verified, so check the picture list before starting it.","ask":false,"skills":[]}]},{"n":12,"title":"No VoiceTalker installed on this machine, or no Python","intro":"","steps":[{"t":"Use the BYOLLM Setup page.","ask":false,"skills":[]},{"t":"Run the writing steps (skills 1, 2 and 5); the check scripts need Python; if there is none, ask the assistant to say so and treat RESULT lines as unverified.","ask":false,"skills":["scribe-wizard","comic-strip","scribe"]},{"t":"Do the merge and the app steps where Python and VoiceTalker are available.","ask":false,"skills":[]}]},{"n":13,"title":"Check a Scribe before you use it","intro":"","steps":[{"t":"Which Scribe, the source it was made from, and an earlier version to compare with, if any.","ask":true,"skills":[]},{"t":"Start a new session (not the one that wrote the Scribe) and run scribe-reviewer on them.","ask":false,"skills":["scribe-reviewer"]},{"t":"Read the verdict. READY: go on. NEEDS FIXES: read each finding's location and what would go wrong.","ask":false,"skills":[]},{"t":"Which findings to fix. Say fix with their numbers; the reviewer writes the next version with only those fixes and checks it again. Or fix them in VoiceTalker and save from VoiceTalker first.","ask":true,"skills":[]},{"t":"Run the reviewer again on the new version, at most three rounds; then decide on anything left.","ask":false,"skills":[]},{"t":"Play the Scribe in VoiceTalker; the review checks the file, not the sound.","ask":false,"skills":[]}]},{"n":14,"title":"Render a flipbook with timed cuts and holds","intro":"","steps":[{"t":"Choose the Scribe or frames manifest, the aspect ratio, and any existing images to reuse. Three matched frames per clip is the default. In a selective flipbook, hold one picture for quiet clips and use extra frames for action or reveals.","ask":false,"skills":[]},{"t":"In gen-frames-manifest, approve the master and any derived frames. Type n for the next clip. Keep the intro, interstitials and outro in order.","ask":false,"skills":["gen-frames-manifest"]},{"t":"For a native handoff on a compatible VoiceTalker build, save approved picture references and timing in frames[] on a new Scribe version. Use 0–1 for a single-frame hold. Set other boundaries from cues in the actual narration. The companion manifest can track assets and review details.","ask":false,"skills":[]},{"t":"Open the new Scribe, load the pictures, and record a short MP4 proof. Compare the order, cue timing, and holds with the Runner before recording the episode. Use a companion manifest when working with older builds that lack native frames. The 1.08.5 scope defers speech-bubble and title overlays.","ask":false,"skills":[]}]},{"n":15,"title":"Critique, repair and review again, until you are satisfied","intro":"`film-critic` runs as an independent subagent. The source can be a Scribe, a recorded video, a screenplay or just a video brief, given as a file, a URL, pasted text or the current session (the default). Menu 16 (mode `loop`) runs these steps for you.","steps":[{"t":"Take in the content. Which source, and run timings or an earlier version, if any. The subagent reads the Scribe or brief in full, or watches the recorded video (stills at every cut, the sound and the transcript), before it judges anything.","ask":true,"skills":["film-critic"]},{"t":"Critique. The video-critique subagent writes its critique and ends with numbered recommended changes, each with its position (S#C#F#, timestamp or brief section).","ask":false,"skills":["film-critic"]},{"t":"Repair what you approve. Which recommended changes to make (numbers, all or none), and any changes of your own. By default they go to a second agent (agent 2) to make; or the critique subagent makes them itself and asks you to approve each one. The result is a new version next to the original, with every ID and file name kept and nothing changed that you did not approve. A recorded video is repaired in its Scribe, then recorded again.","ask":true,"skills":[]},{"t":"Balcony review. Menu 16B: the Siskel & Ebert style review of the repaired version, with two invented critics, each one's thumbs up or down, the 1-to-10 scores on story, characters, dialogue, pacing, pictures and camera, sound and music, and ending, and the final edit score (0 to 100) with its history across loops.","ask":false,"skills":["film-critic"]},{"t":"Loop. Repeat steps 2 to 4 until you say you are satisfied. You can add changes of your own at any point; they are carried into the next review, which checks that each was made and judges it like the rest of the work.","ask":false,"skills":[]}]},{"n":16,"title":"A fuller soundscape","intro":"","steps":[{"t":"Which Scribe or sound brief (file, URL, paste or this chat), and a completed run's .txt or .srt for real timings, if any.","ask":true,"skills":[]},{"t":"soundscape (menu 15). The subagent returns the plan, scene by scene (or cue by cue), and the list of sounds to make, with a prompt for each.","ask":false,"skills":["soundscape"]},{"t":"Make the sounds (a sound-effect or music generator) and save them under the plan's file names in audio/ next to the Scribe.","ask":false,"skills":[]},{"t":"Run soundscape again with apply yes: a new Scribe version that only adds the sounds, as file: paths.","ask":false,"skills":["soundscape"]},{"t":"In VoiceTalker: open it, Batch Media, Sounds Upload tab, Start; then fine-tune volume, timing and fades in the Sounds view; save.","ask":false,"skills":[]}]},{"n":17,"title":"Pick, run and track the skills from the app","intro":"","steps":[{"t":"Open app/index.html in a browser (or https://cmwrx.github.io/BYOLLM/); which agents do you use?","ask":true,"skills":[]},{"t":"BYOLLM Setup: install the skills in each agent, tick Installed, and choose Agent 1 (writes) and Agent 2 (reviews).","ask":false,"skills":[]},{"t":"Home: pick what you have, or a skill in the skills menu; fill its fields; copy the prompt, or open the agent with it.","ask":false,"skills":[]},{"t":"Run it in the agent; add it to your run order and tick it off when it saves its file.","ask":false,"skills":[]},{"t":"Load any scenario into the run order and follow it, in any order, as many times as you like.","ask":false,"skills":[]},{"t":"After any change to the skills or the app, codeumentation (menu 17) brings every guide, menu and package up to date.","ask":false,"skills":["codeumentation"]}]}],"codeumentation":{"definition":"Codeumentation is code and documentation treated as one deliverable. A change is not finished until every place that describes it says the same thing as the code. “Update the codeumentation” is the one-line command for that whole pass.","touches":["Code, its types and schemas","READMEs and workflow docs","Version lines, all one number","Counts, tables, usage blocks and menus","Install notes and requirements","In-app Help, current behaviour only","The changelog, one entry per release","Plugin manifests and rebuilt packages","Installed copies, or how to reinstall","Slides, decks and images","Related gaps the change exposes"],"how":["Finish the change.","Say “update the codeumentation”, or run menu 17.","Answer its questions one at a time: the change (this chat by default), the mode (apply, or list only), the version.","It copies every file before changing it, updates only what the change touches, rebuilds the packages and runs the checks.","A subagent then looks for anything still out of date, any over-reach and any drift from your intent.","Read the report: what changed, what was checked, and what was not updated and why."]}}</script>
+<script>
+(function(){
+"use strict";
+var D=JSON.parse(document.getElementById("vt-data").textContent);
+var $=function(s,r){return (r||document).querySelector(s)};
+var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})};
+var KEY="vt-agent-skills-v1",S={};
+function load(){try{S=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){S={}}S.inst=S.inst||{};S.queue=S.queue||[];S.vals=S.vals||{};S.custom=S.custom||[];S.a1=S.a1||"claude";S.a2=S.a2||"chatgpt";S.stage=S.stage||"all"}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function agents(){return D.agents.concat(S.custom)}
+function agent(id){return agents().filter(function(a){return a.id===id})[0]||D.agents[0]}
+function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove("on")},1800)}
+function copy(txt){try{navigator.clipboard.writeText(txt).then(function(){toast("Copied")},function(){toast("Select the text and copy it")})}catch(e){toast("Select the text and copy it")}}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-copy]");if(b){copy(b.getAttribute("data-copy"))}});
+
+/* ---------- routing ---------- */
+var VIEWS=["home","skills","byollm","scenarios","codeumentation","help"];
+function route(){var v=(location.hash||"#home").slice(1);if(VIEWS.indexOf(v)<0)v="home";
+  VIEWS.forEach(function(x){$("#v-"+x).classList.toggle("on",x===v)});
+  [].forEach.call(document.querySelectorAll("#nav a"),function(a){a.classList.toggle("on",a.getAttribute("data-v")===v);if(a.getAttribute("data-v")===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  closeRail();var lbl={home:"Home",skills:"Skills & Versions",byollm:"BYOLLM Setup",scenarios:"Scenarios",codeumentation:"Codeumentation\u2122",help:"Help"};$("#crumb").textContent="Bring Your Own LLM / "+lbl[v];window.scrollTo(0,0)}
+function closeRail(){$("#rail").classList.remove("open");$("#scrim").classList.remove("on");$("#menuBtn").setAttribute("aria-expanded","false")}
+$("#scrim").addEventListener("click",closeRail);
+window.addEventListener("hashchange",route);
+$("#menuBtn").addEventListener("click",function(){var n=$("#rail");n.classList.toggle("open");$("#scrim").classList.toggle("on",n.classList.contains("open"));this.setAttribute("aria-expanded",n.classList.contains("open"))});
+[].forEach.call(document.querySelectorAll("[data-h]"),function(a){a.addEventListener("click",function(e){e.preventDefault();var t=document.getElementById(a.getAttribute("data-h"));if(t)t.scrollIntoView({behavior:"smooth"})})});
+
+/* ---------- header, footer ---------- */
+function chrome(){var m=D.meta,L=D.links;$("#r-title").textContent=m.title;$("#hSign").href=L.signup;$("#fVer").textContent=m.version;
+  $("#r-sub").innerHTML=esc(m.subtitle);document.title=m.title;
+  $("#fCb").href=L.centerbeam;$("#dlLink").href=L.skills;
+  $("#fLinks").innerHTML=[["VoiceTalker.ai",L.site],["GitHub",L.repo],["Sign up free",L.signup],["Pricing",L.pricing],["What's new",L.whatsnew],["Privacy",L.privacy],["Terms",L.terms]].map(function(x){return '<a href="'+esc(x[1])+'" target="_blank" rel="noopener">'+esc(x[0])+"</a>"}).join(" | ")+' <span class="muted">&copy; Centerbeam AI, 2026 | VoiceTalker Skills License &middot; AS IS</span>'}
+
+/* ---------- hero ---------- */
+var hi=0,ht=null;
+function hero(){var h=D.hero[hi];
+  var act=h.url?'<a class="btn go" href="'+esc(h.url)+'" target="_blank" rel="noopener">'+esc(h.cta)+"</a>":'<button class="go" id="heroGo">'+esc(h.cta)+"</button>";
+  $("#hero").innerHTML='<img class="th" src="'+esc(h.thumb)+'" alt="">'+(h.kicker?'<span class="k">'+esc(h.kicker)+'</span>':'')+'<span class="hk" title="'+esc(h.text)+'">'+esc(h.hook)+"</span>"+act;
+  var g=$("#heroGo");if(g)g.addEventListener("click",function(){if(h.go)location.hash=h.go;else if(h.skill){location.hash="home";pick(h.skill);setTimeout(function(){$("#runPlate").scrollIntoView({behavior:"smooth"})},60)}});
+  $("#heroDots").innerHTML=D.hero.map(function(x,i){return '<button aria-label="Show '+esc(x.kicker||x.hook)+'" class="'+(i===hi?"on":"")+'" data-i="'+i+'"></button>'}).join("")}
+function heroAuto(){clearInterval(ht);if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;ht=setInterval(function(){hi=(hi+1)%D.hero.length;hero()},8000)}
+$("#heroDots").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;hi=+b.getAttribute("data-i");hero();heroAuto()});
+$("#banner").addEventListener("mouseenter",function(){clearInterval(ht)});$("#banner").addEventListener("mouseleave",heroAuto);
+$("#banner").addEventListener("focusin",function(){clearInterval(ht)});
+
+/* ---------- groups, stage, tree ---------- */
+var cur=null;
+function inStage(sk){var g=$("#group").value,s=S.stage,rq=($("#rq").value||"").toLowerCase();if(rq&&(sk.title+" "+sk.name+" "+sk.desc+" "+sk.n).toLowerCase().indexOf(rq)<0)return false;return (g==="all"||sk.stages.indexOf(g)>=0)&&(s==="all"||sk.stages.indexOf(s)>=0)}
+function doneSet(){var d={};S.queue.forEach(function(q){if(q.done)d[q.id]=1});return d}
+function treeHTML(nodes){var dn=doneSet();return "<ul>"+nodes.map(function(n){
+  var inner=(n.items?"<ul>"+n.items.map(function(id){var k=D.skills[id];return '<li><button class="sk'+(id===cur?" on":"")+(inStage(k)?"":" dim")+'" data-id="'+id+'"><span class="n">'+esc(k.n)+"</span><span>"+esc(k.title)+'</span><span class="done">'+(dn[id]?"✓":"")+"</span></button></li>"}).join("")+"</ul>":"")+(n.children?treeHTML(n.children):"");
+  return '<li><details open><summary>'+esc(n.label)+(n.note?' <span class="chip">'+esc(n.note)+"</span>":"")+"</summary>"+inner+"</details></li>"}).join("")+"</ul>"}
+function tree(){$("#tree").innerHTML=treeHTML(D.menu)}
+$("#tree").addEventListener("click",function(e){var b=e.target.closest(".sk");if(b){if(location.hash!=="#home"&&location.hash!=="")location.hash="home";closeRail();pick(b.getAttribute("data-id"));if(innerWidth<960)$("#runPlate").scrollIntoView({behavior:"smooth"})}});
+function stage(){$("#stage").innerHTML=[["all","All"]].concat(D.stages).map(function(s){return '<button data-s="'+s[0]+'" class="'+(S.stage===s[0]?"on":"")+'" aria-pressed="'+(S.stage===s[0])+'">'+esc(s[1])+"</button>"}).join("")}
+$("#stage").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;S.stage=b.getAttribute("data-s");save();stage();tree()});
+function groups(){$("#group").innerHTML=D.groups.map(function(g){return '<option value="'+g[0]+'">'+esc(g[1])+"</option>"}).join("")}
+$("#group").addEventListener("change",tree);$("#rq").addEventListener("input",tree);
+$("#folder").addEventListener("input",function(){S.folder=this.value;save();if(cur)prompt()});
+
+/* ---------- starter ---------- */
+function starter(){$("#starter").innerHTML=D.start.map(function(s){return '<button class="ghost" data-id="'+s[1]+'">'+esc(s[0])+"</button>"}).join("")}
+$("#starter").addEventListener("click",function(e){var b=e.target.closest("button");if(b){pick(b.getAttribute("data-id"));$("#runPlate").scrollIntoView({behavior:"smooth"})}});
+
+/* ---------- run panel ---------- */
+function roleAgent(sk){return sk.role==="critic"?S.a2:S.a1}
+function nextName(v){var m=/^(.*-v)(\d+)\.(\d+)(\.[a-z0-9]+)$/i.exec(v||"");if(!m)return "";var mi=String(+m[3]+1);while(mi.length<m[3].length)mi="0"+mi;return m[1]+m[2]+"."+mi+m[4]}
+function pick(id){cur=id;S.cur=id;save();tree();run()}
+function run(){var sk=D.skills[cur];if(!sk){$("#runTitle").textContent="Run a skill";$("#run").innerHTML='<p class="muted">Choose a skill in the menu, a starter above, or a scenario.</p>';return}
+  var vals=S.vals[cur]||{},aid=S.runAgent&&S.runAgent[cur]||roleAgent(sk);
+  $("#runTitle").innerHTML=esc(sk.n)+" &middot; "+esc(sk.title);
+  var f=sk.params.map(function(p){var v=vals[p.k]!=null?vals[p.k]:(p.dflt||"");
+    var ctl=p.opts?'<select data-k="'+p.k+'">'+p.opts.map(function(o){return "<option"+(o===v?" selected":"")+">"+esc(o)+"</option>"}).join("")+"</select>":'<input data-k="'+p.k+'" value="'+esc(v)+'" placeholder="'+esc(p.ph)+'">';
+    return "<label>"+esc(p.label)+(p.req?" *":"")+"</label>"+ctl}).join("");
+  $("#run").innerHTML='<p>'+esc(sk.desc)+'</p><div class="row">'+(sk.py?'<span class="chip warn">Python 3.8+</span>':'<span class="chip ok">No Python</span>')+(sk.sub?'<span class="chip sub2">Subagent</span>':"")+'<span class="chip">'+(sk.role==="critic"?"Agent 2 reviews":"Agent 1 writes")+'</span></div>'
+   +'<form id="pf" onsubmit="return false">'+f+'<label for="ra">Run with</label><select id="ra">'+agents().map(function(a){return '<option value="'+a.id+'"'+(a.id===aid?" selected":"")+">"+esc(a.name)+(S.inst[a.id]?"":" (setup required)")+"</option>"}).join("")+"</select></form>"
+   +'<pre class="cmd" id="cmd" tabindex="0" aria-label="Prompt to paste"></pre><div class="muted" id="nn" style="font-size:.85rem"></div>'
+   +'<div class="row" style="margin-top:8px"><button id="cp">Copy prompt</button><a class="btn ghost" id="op" target="_blank" rel="noopener">Open agent</a><button class="ghost" id="aq">Add to run order</button></div>';
+  $("#pf").addEventListener("input",function(e){var k=e.target.getAttribute("data-k");if(k){S.vals[cur]=S.vals[cur]||{};S.vals[cur][k]=e.target.value;save()}if(e.target.id==="ra"){S.runAgent=S.runAgent||{};S.runAgent[cur]=e.target.value;save()}prompt()});
+  $("#pf").addEventListener("change",function(e){if(e.target.tagName==="SELECT")$("#pf").dispatchEvent(new Event("input",{bubbles:true}))});
+  $("#cp").addEventListener("click",function(){copy($("#cmd").textContent)});
+  $("#aq").addEventListener("click",function(){addQ(cur)});
+  prompt()}
+function buildPrompt(id,aid){var sk=D.skills[id],a=agent(aid),vals=S.vals[id]||{};
+  var call=(a.call||"Follow the instructions in {skill}/SKILL.md exactly.").replace("{skill}",sk.name);
+  var lines=[call+(sk.mode?" mode="+sk.mode:"")];
+  sk.params.forEach(function(p){var v=vals[p.k]!=null&&vals[p.k]!==""?vals[p.k]:(p.dflt||"");if(v)lines.push(p.label+": "+v)});
+  if(S.folder)lines.push("Project folder: "+S.folder);
+  lines.push("Ask me only what is missing, one question at a time. Save a new file; never overwrite.");
+  return lines.join("\n")}
+function prompt(){var sk=D.skills[cur];if(!sk)return;var aid=$("#ra").value,a=agent(aid),t=buildPrompt(cur,aid);
+  $("#cmd").textContent=t;var op=$("#op");
+  if(a.q){op.href=a.q+encodeURIComponent(t);op.textContent="Open "+a.name+" with this prompt";op.style.display=""}else if(a.launch){op.href=a.launch;op.textContent="Open "+a.name;op.style.display=""}else op.style.display="none";
+  var src=(S.vals[cur]||{});var first=src.scribe||src.source||src.input||"";var n=nextName(first);
+  $("#nn").textContent=n?"Expected new file: "+n:"";
+  var miss=sk.params.filter(function(p){return p.req&&!(src[p.k]||"").trim()}).map(function(p){return p.label});
+  if(miss.length)$("#nn").textContent+=(n?" · ":"")+"Your agent will ask for: "+miss.join(", ")}
+
+/* ---------- run order ---------- */
+function addQ(id){S.queue.push({id:id,done:false});save();queue();tree();toast("Added to your run order")}
+function queue(){var q=S.queue;$("#queue").innerHTML=q.length?q.map(function(x,i){var k=D.skills[x.id];if(!k)return"";return '<li class="'+(x.done?"done":"")+'"><button class="ghost" data-a="done" data-i="'+i+'" aria-label="Mark done">'+(x.done?"✓":"○")+'</button><span class="t"><button class="ghost" style="border:0;justify-content:flex-start;width:100%" data-a="open" data-i="'+i+'">'+esc(k.n+" "+k.title)+'</button></span><button class="ghost" data-a="up" data-i="'+i+'" aria-label="Move up">↑</button><button class="ghost" data-a="dn" data-i="'+i+'" aria-label="Move down">↓</button><button class="ghost" data-a="rm" data-i="'+i+'" aria-label="Remove">✕</button></li>'}).join(""):'<li><span class="t muted">Empty. Add a skill, or load a scenario.</span></li>'}
+$("#queue").addEventListener("click",function(e){var b=e.target.closest("button[data-a]");if(!b)return;var i=+b.getAttribute("data-i"),a=b.getAttribute("data-a"),q=S.queue;
+  if(a==="done")q[i].done=!q[i].done;else if(a==="up"&&i>0)q.splice(i-1,0,q.splice(i,1)[0]);else if(a==="dn"&&i<q.length-1)q.splice(i+1,0,q.splice(i,1)[0]);else if(a==="rm")q.splice(i,1);else if(a==="open"){pick(q[i].id);$("#runPlate").scrollIntoView({behavior:"smooth"});return}
+  save();queue();tree()});
+$("#qClear").addEventListener("click",function(){S.queue=[];save();queue();tree()});
+
+/* ---------- agents ---------- */
+function agentCards(){var a1=S.a1,a2=S.a2;$("#agents").innerHTML=agents().map(function(a){var ok=!!S.inst[a.id];
+  return '<div class="agent"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span><div class="row" style="justify-content:space-between;margin:0"><h3>'+esc(a.name)+'</h3><span class="chip '+(ok?"ok":"warn")+'">'+(ok?"Ready":"Setup required")+'</span></div><div class="muted" style="font-size:.85rem">'+esc(a.kind||"Your agent")+'</div><div class="roles">'+(a.id===a1?'<span class="chip">Agent 1</span> ':"")+(a.id===a2?'<span class="chip">Agent 2</span>':"")+'</div><div class="row"><a class="btn ghost" href="#byollm" data-ag="'+a.id+'">Install skills</a>'+(a.launch?'<a class="btn" href="'+esc(a.launch)+'" target="_blank" rel="noopener">Launch</a>':"")+"</div></div>"}).join("")}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-ag]");if(b){var id=b.getAttribute("data-ag");setTimeout(function(){var t=document.getElementById("byo-"+id);if(t){t.open=true;t.scrollIntoView({behavior:"smooth"})}},60)}});
+function byo(){var opts=function(sel){return agents().map(function(a){return '<option value="'+a.id+'"'+(a.id===sel?" selected":"")+">"+esc(a.name)+"</option>"}).join("")};
+  $("#a1").innerHTML=opts(S.a1);$("#a2").innerHTML=opts(S.a2);$("#sameWarn").style.display=S.a1===S.a2?"":"none";
+  $("#byoAgents").innerHTML=agents().map(function(a){var ok=!!S.inst[a.id];
+    return '<details class="plate" id="byo-'+a.id+'"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center;gap:10px;list-style:none"><span class="cinzel" style="color:var(--brass2);font-size:1.05rem">'+esc(a.name)+'</span><span class="chip '+(ok?"ok":"warn")+'">'+(ok?"Ready":"Setup required")+'</span><span class="muted" style="font-size:.85rem">'+esc(a.kind||"")+"</span></summary>"
+     +(a.install?'<ol class="steps" style="margin-top:8px">'+a.install.map(function(s){return "<li>"+esc(s)+"</li>"}).join("")+"</ol>":"")
+     +(a.cmd?'<pre class="cmd">'+esc(a.cmd)+'</pre><button class="ghost" data-copy="'+esc(a.cmd)+'">Copy command</button>':"")
+     +'<p><b>Call a skill:</b> <span class="mono">'+esc((a.call||"").replace("{skill}","scribe"))+"</span></p>"
+     +(a.sub?"<p><b>Subagents:</b> "+esc(a.sub)+"</p>":"")+(a.verified?'<p class="muted" style="font-size:.85rem">'+esc(a.verified)+"</p>":"")
+     +'<div class="row"><label style="display:flex;align-items:center;gap:10px;min-height:44px;margin:0;color:var(--text)"><input type="checkbox" data-inst="'+a.id+'" style="width:22px;min-height:22px"'+(ok?" checked":"")+"> Installed and checked</label>"+(a.launch?'<a class="btn" href="'+esc(a.launch)+'" target="_blank" rel="noopener">Launch '+esc(a.name)+"</a>":"")
+     +(a.custom?'<button class="ghost" data-rmc="'+a.id+'">Remove</button>':"")+"</div></details>"}).join("")}
+$("#byoAgents").addEventListener("change",function(e){var id=e.target.getAttribute("data-inst");if(id){S.inst[id]=e.target.checked;save();all()}});
+$("#byoAgents").addEventListener("click",function(e){var id=e.target.getAttribute("data-rmc");if(id){S.custom=S.custom.filter(function(c){return c.id!==id});if(S.a1===id)S.a1="claude";if(S.a2===id)S.a2="chatgpt";save();all()}});
+$("#a1").addEventListener("change",function(){S.a1=this.value;save();all()});$("#a2").addEventListener("change",function(){S.a2=this.value;save();all()});
+$("#cAdd").addEventListener("click",function(){var n=$("#cName").value.trim();if(!n){toast("Give the agent a name");return}var u=$("#cUrl").value.trim();
+  if(u&&!/^https:\/\//i.test(u)){toast("Use an https:// address");return}
+  S.custom.push({id:"c"+Date.now(),name:n,kind:"Your own LLM",call:$("#cCall").value.trim()||"Follow the instructions in {skill}/SKILL.md exactly.",launch:u,custom:true,sub:"Subagents not confirmed: the subagent skills run inline and say so.",install:["Add the SKILL.md files to the agent as knowledge or reference files.","Start each step with the call line the menu builds for you."]});
+  $("#cName").value="";$("#cUrl").value="";save();all();toast("Agent added")});
+
+/* ---------- skills page ---------- */
+function cards(){var q=($("#q").value||"").toLowerCase();var dn=doneSet();
+  $("#verLine").textContent="VoiceTalker Skills "+D.meta.version+" · plugin "+D.meta.plugin+" · for VoiceTalker Studio "+D.meta.vt;
+  $("#skillCards").innerHTML=Object.keys(D.skills).map(function(id){var k=D.skills[id];if(q&&(k.title+" "+k.name+" "+k.desc).toLowerCase().indexOf(q)<0)return"";
+   return '<div class="plate" style="margin:0"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span><div class="row" style="justify-content:space-between"><h2>'+esc(k.n)+" &middot; "+esc(k.title)+'</h2>'+(dn[id]?'<span class="chip ok">Done</span>':"")+'</div><div class="mono muted" style="font-size:.8rem">'+esc(k.name)+(k.mode?" mode="+esc(k.mode):"")+" · v"+esc(D.meta.version)+'</div><p>'+esc(k.desc)+'</p><div class="row">'+(k.py?'<span class="chip warn">Python 3.8+</span>':'<span class="chip ok">No Python</span>')+(k.sub?'<span class="chip sub2">Subagent</span>':"")+'<button class="ghost" data-open="'+id+'">Run it</button></div></div>'}).join("")}
+$("#q").addEventListener("input",cards);
+document.addEventListener("click",function(e){var b=e.target.closest("[data-open]");if(b){location.hash="home";pick(b.getAttribute("data-open"));setTimeout(function(){$("#runPlate").scrollIntoView({behavior:"smooth"})},60)}});
+
+/* ---------- SVG plates, rivets and arrows ---------- */
+var SVGDEFS='';
+function wrap(t,max){var w=String(t).split(/\s+/),L=[],c="";w.forEach(function(x){if((c+" "+x).trim().length>max){if(c)L.push(c);c=x}else c=(c+" "+x).trim()});if(c)L.push(c);return L}
+function plate(x,y,w,h,title,sub,o){o=o||{};var fill=o.fill||(o.copper?"url(#cop)":"url(#lth)"),ts=o.ts||22,s='<g filter="url(#sh)"><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="10" fill="'+fill+'" stroke="url(#brs)" stroke-width="3"/></g><rect x="'+(x+5)+'" y="'+(y+5)+'" width="'+(w-10)+'" height="'+(h-10)+'" rx="7" fill="none" stroke="#c9973f" stroke-opacity=".45" stroke-width="1"/>';
+  [[x+11,y+11],[x+w-11,y+11],[x+11,y+h-11],[x+w-11,y+h-11]].forEach(function(p){s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4" fill="url(#riv)"/>'});
+  var tl=o.wrapT?wrap(title,o.wrapT):[title],sl=sub?wrap(sub,o.wrapS||40):[],lh=ts*1.1,sh=(o.ss||15)*1.25,tot=tl.length*lh+sl.length*sh,yy=y+(h-tot)/2+ts*.85;
+  tl.forEach(function(t){s+='<text x="'+(x+w/2)+'" y="'+yy+'" text-anchor="middle" font-family="Cinzel,serif" font-weight="700" font-size="'+ts+'" fill="#f3e2bd">'+esc(t)+'</text>';yy+=lh});
+  sl.forEach(function(t){s+='<text x="'+(x+w/2)+'" y="'+(yy+2)+'" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic" font-weight="600" font-size="'+(o.ss||15)+'" fill="#ecd9b2">'+esc(t)+'</text>';yy+=sh});
+  return o.id?'<g class="wf" data-id="'+o.id+'" tabindex="0" role="button" aria-label="Open '+esc(title)+'">'+s+'</g>':s}
+function arrow(x1,y1,x2,y2,both){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#a4521c" stroke-width="3" marker-end="url(#ah)"'+(both?' marker-start="url(#ah)"':'')+'/>'}
+function sheet(id,W,H,inner,label){var el=document.getElementById(id);if(!el)return;el.innerHTML='<span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span><img class="sl" src="assets/ui/sketch-left.jpg" alt=""><img class="sr" src="assets/ui/sketch-right.jpg" alt=""><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(label)+'">'+SVGDEFS+inner+'</svg>'}
+
+/* ---------- scenarios ---------- */
+function skillIdFor(name,stepText){if(name==="film-critic"&&/balcony|siskel/i.test(stepText))return "film-critic-balcony";for(var id in D.skills)if(D.skills[id].name===name&&!D.skills[id].mode)return id;return null}
+function stepTitle(st){var ids=st.skills.map(function(n){return skillIdFor(n,st.t)}).filter(Boolean);if(ids.length)return ids.map(function(i){return D.skills[i].n+" "+D.skills[i].name+(D.skills[i].mode?" "+D.skills[i].mode:"")}).join(" + ");return st.ask?"YOU":"VOICETALKER"}
+function stepSub(st){var t=st.t.split(/[.:;]/)[0];return t.length>46?t.slice(0,44).trim()+"…":t}
+function scen(){var html="";D.scenarios.forEach(function(s,si){html+='<div class="plate"><span class="rv"></span><span class="rv"></span><span class="rv"></span><span class="rv"></span><div class="row" style="justify-content:space-between"><h2>Scenario '+s.n+": "+esc(s.title)+'</h2><button data-scen="'+si+'">Load into run order</button></div>'+(s.intro?'<p class="it" style="margin:4px 0">'+esc(s.intro)+"</p>":"")+'<div class="diagram" id="sd'+si+'"></div><ol class="steps">'+s.steps.map(function(st){return '<li class="'+(st.ask?"ask":"")+'">'+esc(st.t)+"</li>"}).join("")+"</ol></div>"});
+  $("#scenList").innerHTML=html;
+  D.scenarios.forEach(function(s,si){var cols=innerWidth<700?2:4,pw=240,ph=96,gx=56,gy=60,n=s.steps.length,rows=Math.ceil(n/cols),W=cols*pw+(cols-1)*gx+80,H=rows*ph+(rows-1)*gy+60,g="",pos=[];
+    s.steps.forEach(function(st,i){var r=Math.floor(i/cols),c=i%cols;pos.push([40+c*(pw+gx),30+r*(ph+gy)])});
+    for(var i=0;i<n-1;i++){var a=pos[i],b=pos[i+1];if(a[1]===b[1])g+=arrow(a[0]+pw+4,a[1]+ph/2,b[0]-6,b[1]+ph/2);else g+='<path d="M'+(a[0]+pw/2)+' '+(a[1]+ph+4)+' V'+(a[1]+ph+gy/2)+' H'+(b[0]+pw/2)+' V'+(b[1]-6)+'" fill="none" stroke="#a4521c" stroke-width="3" marker-end="url(#ah)"/>'}
+    s.steps.forEach(function(st,i){g+=plate(pos[i][0],pos[i][1],pw,ph,(i+1)+" · "+stepTitle(st),stepSub(st),{copper:st.ask,ts:15,wrapT:24,ss:15,wrapS:30})});
+    sheet("sd"+si,W,H,g,"Scenario "+s.n+" diagram")})}
+$("#scenList").addEventListener("click",function(e){var b=e.target.closest("[data-scen]");if(!b)return;var s=D.scenarios[+b.getAttribute("data-scen")],n=0,seen={};
+  s.steps.forEach(function(st){st.skills.forEach(function(nm){var id=skillIdFor(nm,st.t);if(id&&!seen[id+st.t]){seen[id+st.t]=1;S.queue.push({id:id,done:false});n++}})});
+  if(!n){toast("No skill steps to add in this scenario");return}save();queue();tree();toast(n+" steps added to your run order");location.hash="home";setTimeout(function(){$("#queue").scrollIntoView({behavior:"smooth"})},80)});
+
+/* ---------- codeumentation ---------- */
+function cod(){var c=D.codeumentation;$("#codDef").textContent=c.definition;$("#codHow").innerHTML=c.how.map(function(h){return "<li>"+esc(h)+"</li>"}).join("");
+  var T=c.touches,W=1100,L=Math.ceil(T.length/2),pw=300,ph=54,gy=22,H=60+L*(ph+gy),cx=W/2,cy=H/2,g="",hw=240,hh=110;
+  T.forEach(function(t,i){var left=i<L,j=left?i:i-L,cnt=left?L:T.length-L,y=30+j*(ph+gy)+(left?0:(L-cnt)*(ph+gy)/2),x=left?40:W-40-pw;
+    g+=arrow(left?cx-hw/2-4:cx+hw/2+4,cy,left?x+pw+6:x-6,y+ph/2)});
+  T.forEach(function(t,i){var left=i<L,j=left?i:i-L,cnt=left?L:T.length-L,y=30+j*(ph+gy)+(left?0:(L-cnt)*(ph+gy)/2),x=left?40:W-40-pw;
+    g+=plate(x,y,pw,ph,(i+1)+" · "+t,"",{ts:13.5,wrapT:34})});
+  g+=plate(cx-hw/2,cy-hh/2,hw,hh,"ONE CHANGE","Codeumentation™: code and docs as one",{ts:26,ss:16,wrapS:24});
+  sheet("codDiagram",W,H,g,"Codeumentation: one change and the eleven places it touches")}
+$("#codRun").addEventListener("click",function(){location.hash="home";pick("codeumentation")});
+
+/* ---------- help diagram ---------- */
+function bigArrows(pos,pw,ph){var g="";for(var i=0;i<pos.length-1;i++){var p=pos[i],q=pos[i+1];
+    if(p[1]===q[1])g+=arrow(p[0]+pw+6,p[1]+ph/2,q[0]-8,q[1]+ph/2);
+    else g+='<path d="M'+(p[0]+pw/2)+' '+(p[1]+ph+6)+' V'+(p[1]+ph+38)+' H'+(q[0]+pw/2)+' V'+(q[1]-8)+'" fill="none" stroke="#a4521c" stroke-width="4" marker-end="url(#ah)"/>'}return g}
+function easy(){var pw=250,ph=150,y=40,X=[30,350,670,990],g="",V="url(#vio)";
+  var P=[["1","YOUR STORY","A document, script, lesson or just an idea"],["2","YOUR AI","Claude, ChatGPT or any AI you use writes the Scribe"],["3","VOICETALKER","Adds the voices, pictures, music and sound"],["4","YOUR EPISODE","A finished video or podcast, ready to share"]];
+  g+=bigArrows(X.map(function(x){return [x,y]}),pw,ph);
+  g+='<path d="M'+(X[3]+pw/2)+' '+(y+ph+6)+' V'+(y+ph+60)+' H'+(X[1]+pw/2)+' V'+(y+ph+10)+'" fill="none" stroke="#a4521c" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#ah)"/>';
+  g+='<rect x="'+(640-190)+'" y="'+(y+ph+44)+'" width="380" height="30" rx="6" fill="#f3e6c8" fill-opacity=".95"/><text x="640" y="'+(y+ph+66)+'" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic" font-weight="700" font-size="21" fill="#5a3d16">Not quite right? Your AI reviews it and fixes it.</text>';
+  P.forEach(function(p,i){g+=plate(X[i],y,pw,ph,p[0]+" · "+p[1],p[2],{ts:24,ss:19,wrapS:24,fill:i===2?V:null})});
+  sheet("easyDiagram",1270,290,g,"How it works: 1 your story, 2 your AI writes the Scribe, 3 VoiceTalker adds voices, pictures, music and sound, 4 your finished episode. If it is not right yet, your AI reviews it and fixes it.")}
+function flow(){var pw=330,ph=130,X=[30,470,910],Y=[40,250],g="",V="url(#vio)";
+  var P=[["1","INSTALL THE SKILLS","Add them to your AI once. BYOLLM Setup shows how."],["2","GIVE IT YOUR STORY","Pick what you have on Home, then copy the prompt."],["3","GET YOUR SCRIBE","Your AI writes it and saves a new file."],
+         ["4","OPEN IT IN VOICETALKER","File, then Open from File. Pick the new Scribe."],["5","ADD PICTURES AND SOUND","Press Batch Media, then Start."],["6","PRESS CREATE & RUN","VoiceTalker plays it and records your episode."]];
+  var pos=[[X[0],Y[0]],[X[1],Y[0]],[X[2],Y[0]],[X[2],Y[1]],[X[1],Y[1]],[X[0],Y[1]]];
+  for(var i=0;i<5;i++){var p=pos[i],q=pos[i+1];
+    if(p[1]===q[1])g+=(q[0]>p[0])?arrow(p[0]+pw+6,p[1]+ph/2,q[0]-8,q[1]+ph/2):arrow(p[0]-6,p[1]+ph/2,q[0]+pw+8,q[1]+ph/2);
+    else g+=arrow(p[0]+pw/2,p[1]+ph+6,q[0]+pw/2,q[1]-8)}
+  P.forEach(function(p,i){g+=plate(pos[i][0],pos[i][1],pw,ph,p[0]+" · "+p[1],p[2],{ts:23,wrapT:24,ss:19,wrapS:30,fill:i>2?V:null})});
+  g+='<text x="'+(X[0]+15)+'" y="'+(Y[0]-12)+'" font-family="Cinzel,serif" font-weight="700" font-size="16" letter-spacing="2" fill="#6b4a1c">IN YOUR AI</text>';
+  g+='<text x="'+(X[0]+15)+'" y="'+(Y[1]+ph+32)+'" font-family="Cinzel,serif" font-weight="700" font-size="16" letter-spacing="2" fill="#4a3a8c">IN VOICETALKER STUDIO</text>';
+  sheet("flowDiagram",1270,440,g,"Six steps: 1 install the skills in your AI, 2 give it your story, 3 get your Scribe, 4 open it in VoiceTalker, 5 add pictures and sound with Batch Media, 6 press Create and Run and record your episode.")}
+$("#flowDiagram").addEventListener("click",function(e){var b=e.target.closest("[data-id]");if(!b)return;location.hash="home";pick(b.getAttribute("data-id"));setTimeout(function(){$("#runPlate").scrollIntoView({behavior:"smooth"})},80)});
+
+/* ---------- the overall workflow (data flow) ---------- */
+function workflow(){var K=D.skills,g="",L="",W=1480,H=600,pw=150;
+  function sk(id,x,y,w,h,o){var k=K[id];if(!k)return "";o=o||{};o.id=id;return plate(x,y,w,h,k.n+" "+(k.mode?"balcony":k.name),o.sub||k.title,{ts:o.ts||14,wrapT:o.wt||18,ss:13,wrapS:o.ws||22,id:id,fill:o.fill,copper:o.copper})}
+  function lab(x,y,t){L+='<rect x="'+(x-t.length*3.4-4)+'" y="'+(y-12)+'" width="'+(t.length*6.8+8)+'" height="17" rx="4" fill="#f3e6c8" fill-opacity=".9"/><text x="'+x+'" y="'+y+'" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic" font-weight="700" font-size="14" fill="#5a3d16">'+esc(t)+'</text>';return ""}
+  function head(x,t){return '<text x="'+(x+pw/2)+'" y="112" text-anchor="middle" font-family="Cinzel,serif" font-weight="700" font-size="13" letter-spacing="2" fill="#6b4a1c">'+esc(t)+'</text>'}
+  var C=[20,235,450,665,880,1095,1310],my=210,mh=84,mc=my+mh/2;
+  ["YOUR INPUT","CAST","WRITE","PLAN","MAKE MEDIA","MERGE","VOICE & RECORD"].forEach(function(t,i){g+=head(C[i],t)});
+  /* arrows first, plates on top */
+  g+=arrow(C[0]+pw+4,mc,C[1]-6,mc)+lab((C[0]+pw+C[1])/2,mc-10,"story")
+   +arrow(C[1]+pw+4,mc,C[2]-6,mc)+lab((C[1]+pw+C[2])/2,mc-10,"cast.md")
+   +arrow(C[2]+pw+4,mc,C[3]-6,mc)+lab((C[2]+pw+C[3])/2,mc-10,"scribe.json")
+   +arrow(C[3]+pw+4,mc,C[4]-6,mc)+lab((C[3]+pw+C[4])/2,mc-10,"media plan")
+   +arrow(C[4]+pw+4,mc,C[5]-6,mc)+lab((C[4]+pw+C[5])/2,mc-10,"media files")
+   +arrow(C[5]+pw+4,mc,C[6]-6,mc)+lab((C[5]+pw+C[6])/2,mc-10,"Scribe v1.01");
+  g+=arrow(C[2]+pw/2,150+2,C[2]+pw/2,my-6)+arrow(C[1]+pw+4,360,C[2]-6,my+mh-8);
+  /* review loop under write */
+  g+=arrow(C[2]+40,446,C[2]+40,my+mh+6)+arrow(C[2]+pw-40,my+mh+6,C[2]+pw-40,446)+lab(C[2]+pw/2,380,"fixes");
+  /* YOU */
+  g+='<path d="M'+(W/2-140)+' 70 C 420 90, 330 300, '+(C[2]+pw/2-50)+' 452" fill="none" stroke="#a4521c" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#ah)"/>';
+  g+='<path d="M'+(W/2+140)+' 70 C 1200 90, 1380 330, '+(C[6]+pw-20)+' 452" fill="none" stroke="#a4521c" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#ah)"/>';
+  /* studio to critic and back to write */
+  g+=arrow(C[6]+pw/2,my+mh+6,C[6]+pw/2,446)+lab(C[6]+pw/2+56,my+mh+70,"recording");
+  g+='<path d="M'+C[6]+' 566 H'+(C[2]+pw+30)+' V'+(my+mh-14)+' H'+(C[2]+pw+6)+'" fill="none" stroke="#a4521c" stroke-width="3" marker-end="url(#ah)"/>'+lab(960,558,"approved changes: the repair loop");
+  /* soundscape into merge */
+  g+=arrow(C[5]+pw/2,446,C[5]+pw/2,my+mh+6)+lab(C[5]+pw/2+50,my+mh+70,"sound plan");
+  /* plates */
+  g+=plate(W/2-150,14,300,62,"YOU","Direct \u00B7 Decide \u00B7 Approve",{copper:true,ts:24,ss:15});
+  g+=plate(C[0],my,pw,mh,"YOUR FILE","Story, lesson, script, brief or pictures",{ts:14,ss:13,wrapS:22});
+  g+=sk("characters",C[1],my,pw,mh)+sk("scribe",C[2],my,pw,mh)+sk("scribe-wizard",C[2],90,pw,60,{wt:22,ws:24})+sk("comic-strip",C[1],330,pw,60,{wt:22,ws:24});
+  g+=sk("image-manifest",C[3],my,pw,mh)+sk("existing-images",C[3],330,pw,60,{ws:24});
+  var ms=["gen-gpt-images","gen-frames-manifest","gen-svg","screen-cap","screen-cap-video","videotalker-import"],sy=132;
+  ms.forEach(function(id,i){g+=sk(id,C[4],sy+i*42,pw,38,{sub:" ",ts:12.5,wt:24})});
+  g+=sk("merge-media",C[5],my,pw,mh);
+  g+=plate(C[6],my,pw,mh,"VOICETALKER STUDIO","Voice \u00B7 Pictures \u00B7 Sound \u00B7 Record MP4",{fill:"url(#vio)",ts:13,wrapT:12,ss:13,wrapS:22});
+  g+=sk("scribe-reviewer",C[2],452,pw,76)+sk("soundscape",C[5],452,pw,76)+sk("film-critic",C[6],452,pw,76);
+  g+=sk("codeumentation",C[0],452,pw,76);
+  g+=sk("film-critic-balcony",C[6],540,pw,50,{sub:"Siskel & Ebert style",ts:12.5});
+  g+=L;sheet("wfDiagram",W,H,g,"The VoiceTalker workflow: your file, cast, Scribe, media plan, media, merge, VoiceTalker Studio, with review, soundscape and critique loops")}
+$("#wfDiagram").addEventListener("click",function(e){var b=e.target.closest("[data-id]");if(!b)return;pick(b.getAttribute("data-id"));setTimeout(function(){$("#runPlate").scrollIntoView({behavior:"smooth"})},60)});
+$("#wfDiagram").addEventListener("keydown",function(e){if(e.key!=="Enter"&&e.key!==" ")return;var b=e.target.closest("[data-id]");if(!b)return;e.preventDefault();pick(b.getAttribute("data-id"));$("#runPlate").scrollIntoView({behavior:"smooth"})});
+
+function all(){agentCards();byo();tree();run();queue();cards()}
+function init(){load();chrome();groups();stage();starter();hero();heroAuto();scen();cod();easy();workflow();flow();$("#folder").value=S.folder||"";cur=S.cur&&D.skills[S.cur]?S.cur:null;all();route()}
+try{fetch("agent-skills.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.skills&&j.menu)D=j;init()},init)}catch(e){init()}
+})();
+</script>
+</body>
+</html>

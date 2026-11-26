@@ -1,0 +1,25 @@
+{
+  "name": "voicetalker-skills",
+  "displayName": "VoiceTalker Skills",
+  "version": "3.2.8",
+  "description": "VoiceTalker Scribe skills: turn any document, brief, app or generated video into a finished, ready-to-record VoiceTalker Scribe, with voices, a media plan, screen capture, one merge, a code-review style Scribe reviewer, a soundscape designer, a video-critique subagent, Codeumentation, a menu and the VoiceTalker Agent Skills app for any LLM.",
+  "author": {
+    "name": "Drew Anderson",
+    "url": "https://centerbeam.ai"
+  },
+  "homepage": "https://voicetalker.ai",
+  "keywords": [
+    "voicetalker",
+    "scribe",
+    "text-to-speech",
+    "narration",
+    "teleprompter",
+    "video",
+    "skills",
+    "sound-design",
+    "critique",
+    "codeumentation",
+    "byollm"
+  ],
+  "icon": "./assets/voicetalker-ai-icon.png"
+}

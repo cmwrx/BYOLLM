@@ -1,0 +1,33 @@
+name: release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check
+        run: python3 tools/check.py
+      - name: Check the tag matches the plugin version
+        run: |
+          V=$(python3 -c "import json;print(json.load(open('plugins/voicetalker-skills/plugin.json'))['version'])")
+          test "v$V" = "$GITHUB_REF_NAME" || { echo "tag $GITHUB_REF_NAME is not v$V"; exit 1; }
+      - name: Build the packages
+        run: |
+          V=${GITHUB_REF_NAME#v}
+          mkdir -p dist
+          (cd plugins/voicetalker-skills && zip -qr "../../dist/voicetalker-skills.plugin" . -x "INSTALL.txt" -x "*.DS_Store" -x "*/__pycache__/*")
+          cp dist/voicetalker-skills.plugin "dist/voicetalker-skills-v$V.zip"
+          (cd plugins && zip -qr "../dist/VoiceTalker-Skills-v$V.zip" voicetalker-skills -x "*.DS_Store" -x "*/__pycache__/*")
+          for z in dist/*; do unzip -tq "$z"; done
+      - name: Publish the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          body_path: CHANGELOG.md

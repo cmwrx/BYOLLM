@@ -1,0 +1,14 @@
+VoiceTalker Plugins and Skills License
+Version 1.0
+
+Copyright © 2026 Cloud Media Works LLC d/b/a Centerbeam AI.
+
+Cloud Media Works LLC d/b/a Centerbeam AI grants anyone who obtains a copy of the plugins, skills, and accompanying files released under this license permission, free of charge, to install, copy, configure, use, and privately modify them solely for workflows that use VoiceTalker.ai or its authorized services and interfaces, including testing and preparation for those workflows. This permission applies to personal and commercial use, including client work. You may use compatible third-party hosts, including AI assistants, to run these workflows.
+
+You may provide copies to employees and contractors working on your behalf under these terms. Preserve this copyright notice and license in every copy and modified version. You may share links to the official releases. Any other redistribution, resale, or sublicensing requires prior written permission. Standalone use unrelated to VoiceTalker and use with another product or service as a substitute for VoiceTalker are outside this grant. All rights not expressly granted are reserved.
+
+VoiceTalker access and third-party components and services are governed by their separate terms. This license grants no trademark rights and places no additional restrictions on using or sharing outputs from permitted workflows, except to the extent they reproduce the licensed files. Nothing in this license limits rights that applicable law makes nonwaivable.
+
+The permissions granted under this license terminate automatically upon material breach. If your permissions terminate, stop using the licensed files and delete all copies and modified versions under your control, except where retention is required by law.
+
+To the fullest extent permitted by applicable law, the licensed files are provided “as is,” without express, implied, or statutory warranties, including merchantability, fitness for a particular purpose, and noninfringement. To the fullest extent permitted by applicable law, the copyright holder is not liable for claims, damages, or other liability arising from the licensed files or their use, whether in contract, tort, or otherwise.

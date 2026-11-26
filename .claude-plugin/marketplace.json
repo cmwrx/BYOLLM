@@ -1,0 +1,15 @@
+{
+  "name": "byollm",
+  "description": "Bring your own LLM: VoiceTalker Agent Skills from Centerbeam AI",
+  "owner": {
+    "name": "Centerbeam AI"
+  },
+  "plugins": [
+    {
+      "name": "voicetalker-skills",
+      "source": "./plugins/voicetalker-skills",
+      "description": "Turn any document, brief, app or video into a finished VoiceTalker Scribe: 17 skills, a menu and the VoiceTalker Agent Skills app.",
+      "version": "3.2.8"
+    }
+  ]
+}

@@ -1,0 +1,1463 @@
+{
+ "meta": {
+  "title": "VoiceTalker Agent Skills",
+  "subtitle": "Codeumentation™",
+  "tagline": "Bring your own LLM",
+  "version": "3.2.8",
+  "vt": "1.08",
+  "plugin": "voicetalker-skills"
+ },
+ "links": {
+  "site": "https://voicetalker.ai",
+  "signup": "https://voicetalker.ai/sign-up",
+  "pricing": "https://voicetalker.ai/pricing",
+  "whatsnew": "https://voicetalker.ai/whats-new",
+  "help": "https://voicetalker.ai/app#help-skills",
+  "privacy": "https://voicetalker.ai/privacy",
+  "terms": "https://voicetalker.ai/terms",
+  "centerbeam": "https://centerbeam.ai",
+  "skills": "https://github.com/cmwrx/BYOLLM/releases/latest",
+  "repo": "https://github.com/cmwrx/BYOLLM"
+ },
+ "hero": [
+  {
+   "id": "byollm",
+   "kicker": "",
+   "hook": "Portable Agent Skills for MultiMedia Storytelling",
+   "text": "Claude, ChatGPT, Codex, Gemini, Grok or Copilot: plug the one you use into the VoiceTalker Agent Skills and turn any story into a finished, voiced Scribe.",
+   "cta": "Set up my agents",
+   "go": "byollm",
+   "thumb": "assets/VoiceTalker-AI-logo-animated.svg"
+  },
+  {
+   "id": "signup",
+   "kicker": "VoiceTalker account",
+   "hook": "Every voice, every picture, one free account.",
+   "text": "The skills write the Scribe; VoiceTalker Studio voices it, illustrates it and records it. Start on the Free plan.",
+   "cta": "Sign up free",
+   "url": "https://voicetalker.ai/sign-up",
+   "thumb": "assets/VoiceTalker-AI-logo-animated.svg"
+  },
+  {
+   "id": "critic",
+   "kicker": "New in 3.2.8",
+   "hook": "Two thumbs up, or back to the edit.",
+   "text": "The video-critique subagent reviews your episode, you approve the fixes, and the balcony review scores the new cut, loop after loop.",
+   "cta": "Open the critique skill",
+   "skill": "film-critic",
+   "thumb": "assets/VoiceTalker-AI-logo-animated.svg"
+  },
+  {
+   "id": "sound",
+   "kicker": "New in 3.2.8",
+   "hook": "Hear the storm before you see it.",
+   "text": "The soundscape subagent plans ambience, foley, music and silence for every scene, with a prompt for every sound to make.",
+   "cta": "Open the soundscape skill",
+   "skill": "soundscape",
+   "thumb": "assets/VoiceTalker-AI-logo-animated.svg"
+  }
+ ],
+ "agents": [
+  {
+   "id": "chatgpt",
+   "name": "ChatGPT",
+   "kind": "Chat app",
+   "call": "@{skill}",
+   "launch": "https://chatgpt.com/",
+   "q": "https://chatgpt.com/?q=",
+   "sub": "No subagents: the subagent skills run in the same chat and say the review is not independent.",
+   "install": [
+    "Skills in ChatGPT are a beta a workspace owner turns on in workspace settings.",
+    "Upload each skill folder as a zip (one top-level folder with its SKILL.md).",
+    "If skill upload is not available: open a Project, upload the SKILL.md files, and start with: Follow the instructions in scribe/SKILL.md exactly.",
+    "The Python checks and the two screen-cap skills need Claude Code or Codex on your own computer."
+   ],
+   "verified": "Not yet run by Centerbeam in ChatGPT."
+  },
+  {
+   "id": "claude",
+   "name": "Claude",
+   "kind": "Claude app, claude.ai and Claude Code",
+   "call": "/voicetalker-skills:{skill}",
+   "launch": "https://claude.ai/new",
+   "q": "https://claude.ai/new?q=",
+   "sub": "Subagents supported: soundscape, film-critic and the Codeumentation gap check run as independent subagents.",
+   "install": [
+    "Claude Code: claude plugin marketplace add cmwrx/BYOLLM, then claude plugin install voicetalker-skills@byollm.",
+    "Claude app or claude.ai: download voicetalker-skills.plugin from github.com/cmwrx/BYOLLM/releases/latest and open it; the app installs it with one button.",
+    "From a downloaded copy of the repository: claude plugin marketplace add ./BYOLLM (its folder) instead.",
+    "Install the plugin or the loose skill folders, never both."
+   ],
+   "cmd": "claude plugin marketplace add cmwrx/BYOLLM\nclaude plugin install voicetalker-skills@byollm",
+   "verified": "Plugin layout checked against Claude's manifest reference."
+  },
+  {
+   "id": "codex",
+   "name": "Codex",
+   "kind": "OpenAI Codex CLI, IDE or app",
+   "call": "${skill}",
+   "launch": "",
+   "sub": "Check your Codex version for subagents; without them the subagent skills run inline and say so.",
+   "install": [
+    "Run: codex plugin marketplace add cmwrx/BYOLLM, then install VoiceTalker Skills from the BYOLLM marketplace in the plugin directory.",
+    "Or copy the skill folders into ~/.agents/skills/ (all projects) or <project>/.agents/skills/.",
+    "Restart Codex if the skills do not show up.",
+    "If descriptions get shortened, install only the skills you use or raise skills.max_context_tokens in ~/.codex/config.toml."
+   ],
+   "cmd": "codex plugin marketplace add cmwrx/BYOLLM",
+   "verified": "Not yet run by Centerbeam in Codex."
+  },
+  {
+   "id": "gemini",
+   "name": "Gemini",
+   "kind": "Gemini app or Gemini CLI",
+   "call": "Follow the instructions in {skill}/SKILL.md exactly.",
+   "launch": "https://gemini.google.com/app",
+   "sub": "Subagents not confirmed: the subagent skills run inline and say so.",
+   "install": [
+    "Add the SKILL.md files to a Gem or a project as knowledge files.",
+    "Start each step with: Follow the instructions in scribe/SKILL.md exactly.",
+    "Writing steps work this way; the Python checks need a host that runs Python."
+   ],
+   "verified": "Not yet run by Centerbeam in Gemini."
+  },
+  {
+   "id": "grok",
+   "name": "Grok",
+   "kind": "Grok Build CLI, grok.com",
+   "call": "/{skill}",
+   "launch": "https://grok.com/",
+   "sub": "Subagents not confirmed: the subagent skills run inline and say so.",
+   "install": [
+    "Grok Build reads skills from ~/.grok/skills/, ./.grok/skills/ and ~/.agents/skills/, and reads Claude Code's skills too.",
+    "Skills you installed for Claude Code or Codex should load without copying again.",
+    "grok.com Skills: the file format is not published yet."
+   ],
+   "verified": "Not yet run by Centerbeam in Grok."
+  },
+  {
+   "id": "copilot",
+   "name": "Copilot",
+   "kind": "GitHub or Microsoft Copilot",
+   "call": "Follow the instructions in {skill}/SKILL.md exactly.",
+   "launch": "https://copilot.microsoft.com/",
+   "sub": "Subagents not confirmed: the subagent skills run inline and say so.",
+   "install": [
+    "Add the SKILL.md files to your workspace or chat as reference files.",
+    "Start each step with: Follow the instructions in scribe/SKILL.md exactly.",
+    "Writing steps work this way; the Python checks need a host that runs Python."
+   ],
+   "verified": "Not yet run by Centerbeam in Copilot."
+  }
+ ],
+ "groups": [
+  [
+   "all",
+   "All skills"
+  ],
+  [
+   "write",
+   "Write the Scribe"
+  ],
+  [
+   "picture",
+   "Pictures and media"
+  ],
+  [
+   "sound",
+   "Sound and music"
+  ],
+  [
+   "review",
+   "Review and critique"
+  ],
+  [
+   "record",
+   "Capture and video"
+  ],
+  [
+   "maintain",
+   "Maintain"
+  ]
+ ],
+ "stages": [
+  [
+   "write",
+   "Write"
+  ],
+  [
+   "picture",
+   "Picture"
+  ],
+  [
+   "sound",
+   "Sound"
+  ],
+  [
+   "review",
+   "Review"
+  ],
+  [
+   "record",
+   "Record"
+  ],
+  [
+   "maintain",
+   "Maintain"
+  ]
+ ],
+ "menu": [
+  {
+   "label": "Basic",
+   "note": "no Python needed",
+   "items": [
+    "scribe-wizard",
+    "comic-strip",
+    "existing-images",
+    "characters",
+    "scribe",
+    "scribe-reviewer"
+   ]
+  },
+  {
+   "label": "Advanced",
+   "note": "Python 3.8 or later, except the subagents",
+   "children": [
+    {
+     "label": "Add pictures and media",
+     "items": [
+      "image-manifest",
+      "merge-media",
+      "gen-svg",
+      "gen-gpt-images",
+      "gen-frames-manifest"
+     ]
+    },
+    {
+     "label": "Capture a real app",
+     "note": "also Chrome and Pillow",
+     "items": [
+      "screen-cap",
+      "screen-cap-video"
+     ]
+    },
+    {
+     "label": "Video into a Scribe",
+     "items": [
+      "videotalker-import"
+     ]
+    },
+    {
+     "label": "Sound and music",
+     "items": [
+      "soundscape"
+     ]
+    },
+    {
+     "label": "Critique and repair",
+     "items": [
+      "film-critic",
+      "film-critic-balcony"
+     ]
+    },
+    {
+     "label": "Maintain",
+     "items": [
+      "codeumentation"
+     ]
+    }
+   ]
+  }
+ ],
+ "skills": {
+  "scribe-wizard": {
+   "n": "1",
+   "name": "scribe-wizard",
+   "title": "Fast Scribe from a brief",
+   "desc": "A short questionnaire turns a brief or goals file into a complete Scribe with 1 to 3 speakers.",
+   "role": "writer",
+   "py": false,
+   "stages": [
+    "write"
+   ],
+   "params": [
+    {
+     "k": "brief",
+     "label": "Brief or goals file",
+     "req": true,
+     "ph": "my-brief.md, or: I will describe it now"
+    },
+    {
+     "k": "out",
+     "label": "Output folder",
+     "req": false,
+     "ph": "next to the brief"
+    }
+   ]
+  },
+  "comic-strip": {
+   "n": "2",
+   "name": "comic-strip",
+   "title": "Comic Scribe",
+   "desc": "Builds a numbered comic Scribe from a panel script or idea, with intro and outro and strict panel order.",
+   "role": "writer",
+   "py": false,
+   "stages": [
+    "write"
+   ],
+   "params": [
+    {
+     "k": "script",
+     "label": "Panel script or idea",
+     "req": true,
+     "ph": "my-comic-panels.md"
+    },
+    {
+     "k": "cast",
+     "label": "Cast file",
+     "req": false,
+     "ph": "my-comic-cast.md"
+    }
+   ]
+  },
+  "existing-images": {
+   "n": "3",
+   "name": "existing-images",
+   "title": "Your own pictures",
+   "desc": "Places photos, scans and screen shots you already own into a Scribe, without making new art.",
+   "role": "writer",
+   "py": false,
+   "stages": [
+    "picture"
+   ],
+   "params": [
+    {
+     "k": "scribe",
+     "label": "Scribe",
+     "req": true,
+     "ph": "my-story-scribe-v1.00.json"
+    },
+    {
+     "k": "pics",
+     "label": "Pictures (folder or list)",
+     "req": true,
+     "ph": "pictures/"
+    },
+    {
+     "k": "shape",
+     "label": "Orientation",
+     "req": false,
+     "ph": "",
+     "opts": [
+      "16:9",
+      "9:16"
+     ],
+     "dflt": "16:9"
+    }
+   ]
+  },
+  "characters": {
+   "n": "4",
+   "name": "characters",
+   "title": "The cast",
+   "desc": "Finds every speaker and writes a reusable cast file: voices, delivery, looks and staging.",
+   "role": "writer",
+   "py": false,
+   "stages": [
+    "write"
+   ],
+   "params": [
+    {
+     "k": "input",
+     "label": "Input file",
+     "req": true,
+     "ph": "my-story.docx"
+    },
+    {
+     "k": "cast",
+     "label": "Earlier cast file to reuse",
+     "req": false,
+     "ph": "series-cast.md"
+    }
+   ]
+  },
+  "scribe": {
+   "n": "5",
+   "name": "scribe",
+   "title": "Document to Scribe",
+   "desc": "Turns a document or story into a complete Scribe: scenes, short clips, voices, optional intro and outro.",
+   "role": "writer",
+   "py": false,
+   "stages": [
+    "write"
+   ],
+   "params": [
+    {
+     "k": "input",
+     "label": "Input file",
+     "req": true,
+     "ph": "my-story.txt"
+    },
+    {
+     "k": "cast",
+     "label": "Cast file",
+     "req": false,
+     "ph": "my-story-cast.md"
+    }
+   ]
+  },
+  "scribe-reviewer": {
+   "n": "6",
+   "name": "scribe-reviewer",
+   "title": "Code-review a Scribe",
+   "desc": "Finds, verifies and ranks defects in schema, voices, tags, pictures and source coverage. Read-only unless you ask for fixes. Run it in a fresh session.",
+   "role": "critic",
+   "py": false,
+   "stages": [
+    "review"
+   ],
+   "params": [
+    {
+     "k": "scribe",
+     "label": "Scribe",
+     "req": true,
+     "ph": "my-story-scribe-v1.00.json"
+    },
+    {
+     "k": "source",
+     "label": "Source it was made from",
+     "req": false,
+     "ph": "my-story.txt"
+    },
+    {
+     "k": "effort",
+     "label": "Effort",
+     "req": false,
+     "ph": "",
+     "opts": [
+      "low",
+      "medium",
+      "high",
+      "max"
+     ],
+     "dflt": "medium"
+    }
+   ]
+  },
+  "image-manifest": {
+   "n": "7",
+   "name": "image-manifest",
+   "title": "The media plan",
+   "desc": "Plans the media for every scene and clip: generated pictures, screen shots, your files, video, or none, with a final prompt for each picture.",
+   "role": "writer",
+   "py": true,
+   "stages": [
+    "picture"
+   ],
+   "params": [
+    {
+     "k": "scribe",
+     "label": "Scribe",
+     "req": true,
+     "ph": "my-story-scribe-v1.00.json"
+    },
+    {
+     "k": "cast",
+     "label": "Cast file",
+     "req": false,
+     "ph": "my-story-cast.md"
+    }
+   ]
+  },
+  "merge-media": {
+   "n": "8",
+   "name": "merge-media",
+   "title": "One merge",
+   "desc": "Writes the next Scribe version with every picture, shot, sound and video from the plan, leaving every word, voice and ID untouched.",
+   "role": "writer",
+   "py": true,
+   "stages": [
+    "picture"
+   ],
+   "params": [
+    {
+     "k": "scribe",
+     "label": "Scribe",
+     "req": true,
+     "ph": "my-story-scribe-v1.00.json"
+    },
+    {
+     "k": "plan",
+     "label": "Media plan or cut sheet",
+     "req": true,
+     "ph": "my-story-image-manifest.md"
+    }
+   ]
+  },
+  "gen-svg": {
+   "n": "9",
+   "name": "gen-svg",
+   "title": "Animated SVG pictures",
+   "desc": "Makes animated SVG backgrounds of people, places, things, scenes and title cards.",
+   "role": "writer",
+   "py": true,
+   "stages": [
+    "picture"
+   ],
+   "params": [
+    {
+     "k": "from",
+     "label": "From",
+     "req": true,
+     "ph": "my-story-cast.md, the Scribe, or a description"
+    }
+   ]
+  },
+  "gen-gpt-images": {
+   "n": "10",
+   "name": "gen-gpt-images",
+   "title": "ChatGPT picture prompts",
+   "desc": "An indexed ChatGPT prompt set from the media plan, with key frames so every character and place looks the same.",
+   "role": "writer",
+   "py": true,
+   "stages": [
+    "picture"
+   ],
+   "params": [
+    {
+     "k": "plan",
+     "label": "Media plan",
+     "req": true,
+     "ph": "my-story-image-manifest.md"
+    },
+    {
+     "k": "fmt",
+     "label": "Format",
+     "req": false,
+     "ph": "",
+     "opts": [
+      "jpg",
+      "png"
+     ],
+     "dflt": "jpg"
+    }
+   ]
+  },
+  "gen-frames-manifest": {
+   "n": "11",
+   "name": "gen-frames-manifest",
+   "title": "Flipbook frames",
+   "desc": "Timed flipbook frames and single-frame holds for each clip. Type n for the next clip.",
+   "role": "writer",
+   "py": true,
+   "stages": [
+    "picture"
+   ],
+   "params": [
+    {
+     "k": "scribe",
+     "label": "Scribe or frames manifest",
+     "req": true,
+     "ph": "my-story-scribe-v1.01.json"
+    },
+    {
+     "k": "shape",
+     "label": "Aspect ratio",
+     "req": false,
+     "ph": "",
+     "opts": [
+      "16:9",
+      "9:16",
+      "1:1"
+     ],
+     "dflt": "16:9"
+    }
+   ]
+  },
+  "screen-cap": {
+   "n": "12",
+   "name": "screen-cap",
+   "title": "Screen shots of an app",
+   "desc": "Screen shots of any web app, each tied to its clip and checked with you one shot at a time. Needs Chrome and Pillow.",
+   "role": "writer",
+   "py": true,
+   "stages": [
+    "record"
+   ],
+   "params": [
+    {
+     "k": "plan",
+     "label": "Media plan",
+     "req": true,
+     "ph": "my-howto-image-manifest.md"
+    },
+    {
+     "k": "scribe",
+     "label": "Scribe",
+     "req": true,
+     "ph": "my-howto-scribe-v1.00.json"
+    },
+    {
+     "k": "url",
+     "label": "App address",
+     "req": true,
+     "ph": "http://localhost:5001"
+    }
+   ]
+  },
+  "screen-cap-video": {
+   "n": "13",
+   "name": "screen-cap-video",
+   "title": "Screen video of an app",
+   "desc": "MP4 of a live app timed to the narration, with zoom, pan and highlights, plus the cut sheet merge-media reads. Needs Chrome, Pillow and ffmpeg.",
+   "role": "writer",
+   "py": true,
+   "stages": [
+    "record"
+   ],
+   "params": [
+    {
+     "k": "scribe",
+     "label": "Scribe",
+     "req": true,
+     "ph": "my-howto-scribe-v1.00.json"
+    },
+    {
+     "k": "url",
+     "label": "App address and port",
+     "req": true,
+     "ph": "http://localhost:5001"
+    }
+   ]
+  },
+  "videotalker-import": {
+   "n": "14",
+   "name": "videotalker-import",
+   "title": "VideoTalker into a Scribe",
+   "desc": "Turns a VideoTalker scene list into a media cut sheet, one cut per scene on the clip that speaks it.",
+   "role": "writer",
+   "py": true,
+   "stages": [
+    "record"
+   ],
+   "params": [
+    {
+     "k": "scenes",
+     "label": "Scene list",
+     "req": true,
+     "ph": "video-scene.json"
+    },
+    {
+     "k": "scribe",
+     "label": "Scribe",
+     "req": true,
+     "ph": "my-story-scribe-v1.00.json"
+    }
+   ]
+  },
+  "soundscape": {
+   "n": "15",
+   "name": "soundscape",
+   "title": "A full soundscape",
+   "desc": "Runs as a subagent sound designer: plans layered ambience, foley, effects, music, silence and fades for a Scribe or a sound brief, with a prompt for every new sound. Never changes a sound already there.",
+   "role": "critic",
+   "py": false,
+   "sub": true,
+   "stages": [
+    "sound"
+   ],
+   "params": [
+    {
+     "k": "source",
+     "label": "Source",
+     "req": true,
+     "ph": "my-story-scribe-v1.00.json, a URL, or leave blank for this chat"
+    },
+    {
+     "k": "run",
+     "label": "Run timings",
+     "req": false,
+     "ph": "run.txt or .srt from a completed run"
+    },
+    {
+     "k": "apply",
+     "label": "Apply",
+     "req": false,
+     "ph": "",
+     "opts": [
+      "no",
+      "yes"
+     ],
+     "dflt": "no"
+    }
+   ]
+  },
+  "film-critic": {
+   "n": "16",
+   "name": "film-critic",
+   "title": "Video critique",
+   "desc": "Runs as a video-critique subagent on a Scribe, a recorded video, a screenplay or a video brief. Mode loop: critique, the changes you approve, review again, until you are satisfied.",
+   "role": "critic",
+   "py": false,
+   "sub": true,
+   "stages": [
+    "review"
+   ],
+   "params": [
+    {
+     "k": "source",
+     "label": "Source",
+     "req": true,
+     "ph": "my-story-scribe-v1.00.json, a URL, or leave blank for this chat"
+    },
+    {
+     "k": "mode",
+     "label": "Mode",
+     "req": false,
+     "ph": "",
+     "opts": [
+      "critique",
+      "loop"
+     ],
+     "dflt": "critique"
+    },
+    {
+     "k": "notes",
+     "label": "Your change notes",
+     "req": false,
+     "ph": "anything you want changed next"
+    }
+   ]
+  },
+  "film-critic-balcony": {
+   "n": "16B",
+   "name": "film-critic",
+   "mode": "balcony",
+   "title": "Balcony review (Siskel & Ebert style)",
+   "desc": "Two invented critics debate the work, each gives a thumbs up or down and 1-to-10 scores, and the final edit score (0 to 100) is kept across loops.",
+   "role": "critic",
+   "py": false,
+   "sub": true,
+   "stages": [
+    "review"
+   ],
+   "params": [
+    {
+     "k": "source",
+     "label": "Source",
+     "req": true,
+     "ph": "my-story-scribe-v1.00.json, a URL, or leave blank for this chat"
+    }
+   ]
+  },
+  "codeumentation": {
+   "n": "17",
+   "name": "codeumentation",
+   "title": "Codeumentation™",
+   "desc": "Brings every code and document file a change touches up to date in one pass, then a subagent checks for gaps.",
+   "role": "writer",
+   "py": false,
+   "stages": [
+    "maintain"
+   ],
+   "params": [
+    {
+     "k": "change",
+     "label": "The change",
+     "req": false,
+     "ph": "leave blank for this chat's changes"
+    },
+    {
+     "k": "root",
+     "label": "Project root",
+     "req": false,
+     "ph": "the project open in this session"
+    },
+    {
+     "k": "mode",
+     "label": "Mode",
+     "req": false,
+     "ph": "",
+     "opts": [
+      "apply",
+      "list"
+     ],
+     "dflt": "apply"
+    },
+    {
+     "k": "version",
+     "label": "Version",
+     "req": false,
+     "ph": "keep, or a new number such as 3.2.9"
+    }
+   ]
+  }
+ },
+ "start": [
+  [
+   "A document, story, lesson or script",
+   "scribe"
+  ],
+  [
+   "A few lines of idea",
+   "scribe-wizard"
+  ],
+  [
+   "A comic script",
+   "comic-strip"
+  ],
+  [
+   "Pictures you own",
+   "existing-images"
+  ],
+  [
+   "A Scribe that needs pictures",
+   "image-manifest"
+  ],
+  [
+   "A Scribe about a real app",
+   "screen-cap"
+  ],
+  [
+   "A Scribe to check",
+   "scribe-reviewer"
+  ],
+  [
+   "An episode that needs fuller sound",
+   "soundscape"
+  ],
+  [
+   "An episode to critique and improve",
+   "film-critic"
+  ],
+  [
+   "A change to write up everywhere",
+   "codeumentation"
+  ]
+ ],
+ "scenarios": [
+  {
+   "n": 1,
+   "title": "A document or story becomes a finished, illustrated Scribe",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Which file, and is there a cast file or an earlier Scribe?",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "INTRO and OUTRO: include both, one, or neither?",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "Optional: characters on the file; answer the look, cast and voice questions; keep …-cast.md.",
+     "ask": false,
+     "skills": [
+      "characters"
+     ]
+    },
+    {
+     "t": "scribe on the file (with the cast file). Read the report: title, subtitle, closing line, voices.",
+     "ask": false,
+     "skills": [
+      "scribe"
+     ]
+    },
+    {
+     "t": "Optional: scribe-reviewer on the Scribe and the source file, in a new session. Fix anything under NEEDS FIXES before going on.",
+     "ask": false,
+     "skills": [
+      "scribe-reviewer"
+     ]
+    },
+    {
+     "t": "image-manifest on the Scribe. picture rule and orientation, shown with their counts.",
+     "ask": true,
+     "skills": [
+      "image-manifest"
+     ]
+    },
+    {
+     "t": "merge-media on the Scribe and the manifest. Confirm RESULT PASS.",
+     "ask": false,
+     "skills": [
+      "merge-media"
+     ]
+    },
+    {
+     "t": "In VoiceTalker: File, Open from File, pick the new file; confirm the picture count; Batch Media, Start; Save; Create & Play.",
+     "ask": true,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "title": "A quick 1 to 3 speaker Scribe from a few lines",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Write or paste a brief (topic, speakers, mood) into a .md.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "scribe-wizard on it; answer only the unanswered questions, or say defaults.",
+     "ask": false,
+     "skills": [
+      "scribe-wizard"
+     ]
+    },
+    {
+     "t": "Optional: steps 2 and 3 of scenario 1 on its Scribe for pictures.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Open in VoiceTalker and run.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "title": "A comic strip",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Write the panel script (numbered panels, speakers, dialogue).",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "comic-strip on it; keep the mandatory intro and outro.",
+     "ask": false,
+     "skills": [
+      "comic-strip"
+     ]
+    },
+    {
+     "t": "image-manifest, then merge-media, with the comic's orientation.",
+     "ask": false,
+     "skills": [
+      "image-manifest",
+      "merge-media"
+     ]
+    },
+    {
+     "t": "Batch Media in VoiceTalker.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "title": "A series with the same cast every episode",
+   "intro": "",
+   "steps": [
+    {
+     "t": "First episode: scenario 1 with characters; keep the cast file.",
+     "ask": false,
+     "skills": [
+      "characters"
+     ]
+    },
+    {
+     "t": "Next episode: scribe and image-manifest with the same cast file; speakers not in the cast get default voices and are reported.",
+     "ask": false,
+     "skills": [
+      "image-manifest",
+      "scribe"
+     ]
+    },
+    {
+     "t": "Never change a cast voice or look to fix a problem; report it and decide.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Optional: gen-svg with the cast file for matching animated pictures.",
+     "ask": false,
+     "skills": [
+      "gen-svg"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "title": "Pictures you already own",
+   "intro": "",
+   "steps": [
+    {
+     "t": "scribe (or an existing Scribe).",
+     "ask": false,
+     "skills": [
+      "scribe"
+     ]
+    },
+    {
+     "t": "existing-images with the folder of pictures: inventory, matching to scenes and clips, orientation.",
+     "ask": false,
+     "skills": [
+      "existing-images"
+     ]
+    },
+    {
+     "t": "Approve any resize or recomposition; originals stay unchanged.",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "Import the images in VoiceTalker and attach them; the skill never invents image IDs.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "title": "A How-To Scribe about the app, with real screen shots",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Is the narration already a Scribe? If it is a .md with a JSON block, copy that block to a .json next to it (no other change). Otherwise run scribe.",
+     "ask": true,
+     "skills": [
+      "scribe"
+     ]
+    },
+    {
+     "t": "Is there a shot list to follow? If so, give it; the skill aligns to it.",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "App address and port, and where to store the pictures.",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "screen-cap: approve the shot list, sign in in the separate Chrome window, let it capture, look at each shot.",
+     "ask": false,
+     "skills": [
+      "screen-cap"
+     ]
+    },
+    {
+     "t": "In VoiceTalker: open the Scribe and press Load picture or video.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 7,
+   "title": "The same How-To as screen video",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Steps 1 to 3 of scenario 6 (Scribe, shot list, address, folder).",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Real run lengths (a -completed.json) or estimates?",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "screen-cap-video: answer the eight questions (or defaults), approve …-video-plan.md, sign in, render one file at a time.",
+     "ask": false,
+     "skills": [
+      "screen-cap-video"
+     ]
+    },
+    {
+     "t": "Check each file (RESULT PASS) and look at the contact sheet; re-render only weak scenes.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Reload the Scribe in the capture window if scene beats typed text; the skill closes the browser at the end.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "The skill writes …-video-manifest.md next to the Scribe (one cut per scene file, attached to the scene); keep the videos under the Scribe's folder.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "merge-media on the Scribe and the cut sheet; open the merged Scribe in VoiceTalker and press Load picture or video (one button loads pictures and videos), which loads the files and stores them like pictures, against your file storage. Do not assume a video plays until you have played it in VoiceTalker.",
+     "ask": false,
+     "skills": [
+      "merge-media"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 8,
+   "title": "Videos generated in VideoTalker, onto the Scribe",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Build the Scribe from the same narration as the VideoTalker scene list (scenario 1 or 2).",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Which scene list, which Scribe, final or draft files.",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "videotalker-import; read the table and the Not placed list; use --map for interstitials.",
+     "ask": false,
+     "skills": [
+      "videotalker-import"
+     ]
+    },
+    {
+     "t": "merge-media on the Scribe and the cut sheet; confirm RESULT PASS and read the warnings.",
+     "ask": false,
+     "skills": [
+      "merge-media"
+     ]
+    },
+    {
+     "t": "Keep the videos under the Scribe's folder so VoiceTalker can load them from the project folder.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Open the merged Scribe in VoiceTalker and press Load picture or video in the scene's or clip's Picture box (or tick Load these files when I press Start in Batch Media); it loads the files and stores them like pictures, against your file storage.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Play it; confirm a clip that has no video of its own still shows the previous clip's video (not yet verified in the app).",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 9,
+   "title": "Words change after pictures were made",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Did you edit in VoiceTalker since the file on disk was saved? If yes, save from VoiceTalker first.",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "scribe in normalize mode on that Scribe (next version).",
+     "ask": false,
+     "skills": [
+      "scribe"
+     ]
+    },
+    {
+     "t": "image-manifest again; merge-media again. If pictures were already attached, say whether to attach new prompts (the old pictures become unattached).",
+     "ask": true,
+     "skills": [
+      "image-manifest",
+      "merge-media"
+     ]
+    },
+    {
+     "t": "Batch Media; save.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 10,
+   "title": "Add animated backgrounds",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Any Scribe plus its cast file or manifest.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "gen-svg: choose what to make, the size, motion and loop length.",
+     "ask": false,
+     "skills": [
+      "gen-svg"
+     ]
+    },
+    {
+     "t": "Upload the .svg files in Background and Logo and pick them as Global, scene or clip backgrounds.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 11,
+   "title": "Add video to a Scribe that is already illustrated",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Start from the merged Scribe (…-scribe-v1.01.json) before Batch Media has generated its pictures: its backgroundImageId values are still empty, so the merge can write into them.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Scenario 8 steps 2 to 7 on it. The prompts stay on their clips.",
+     "ask": false,
+     "skills": [
+      "videotalker-import",
+      "merge-media"
+     ]
+    },
+    {
+     "t": "A place that already holds a generated image id stops the merge and asks; it is never replaced on its own. A place with a file: value shows that file; whether Batch Media skips such a place is not verified, so check the picture list before starting it.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 12,
+   "title": "No VoiceTalker installed on this machine, or no Python",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Use the BYOLLM Setup page.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Run the writing steps (skills 1, 2 and 5); the check scripts need Python; if there is none, ask the assistant to say so and treat RESULT lines as unverified.",
+     "ask": false,
+     "skills": [
+      "scribe-wizard",
+      "comic-strip",
+      "scribe"
+     ]
+    },
+    {
+     "t": "Do the merge and the app steps where Python and VoiceTalker are available.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 13,
+   "title": "Check a Scribe before you use it",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Which Scribe, the source it was made from, and an earlier version to compare with, if any.",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "Start a new session (not the one that wrote the Scribe) and run scribe-reviewer on them.",
+     "ask": false,
+     "skills": [
+      "scribe-reviewer"
+     ]
+    },
+    {
+     "t": "Read the verdict. READY: go on. NEEDS FIXES: read each finding's location and what would go wrong.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Which findings to fix. Say fix with their numbers; the reviewer writes the next version with only those fixes and checks it again. Or fix them in VoiceTalker and save from VoiceTalker first.",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "Run the reviewer again on the new version, at most three rounds; then decide on anything left.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Play the Scribe in VoiceTalker; the review checks the file, not the sound.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 14,
+   "title": "Render a flipbook with timed cuts and holds",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Choose the Scribe or frames manifest, the aspect ratio, and any existing images to reuse. Three matched frames per clip is the default. In a selective flipbook, hold one picture for quiet clips and use extra frames for action or reveals.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "In gen-frames-manifest, approve the master and any derived frames. Type n for the next clip. Keep the intro, interstitials and outro in order.",
+     "ask": false,
+     "skills": [
+      "gen-frames-manifest"
+     ]
+    },
+    {
+     "t": "For a native handoff on a compatible VoiceTalker build, save approved picture references and timing in frames[] on a new Scribe version. Use 0–1 for a single-frame hold. Set other boundaries from cues in the actual narration. The companion manifest can track assets and review details.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Open the new Scribe, load the pictures, and record a short MP4 proof. Compare the order, cue timing, and holds with the Runner before recording the episode. Use a companion manifest when working with older builds that lack native frames. The 1.08.5 scope defers speech-bubble and title overlays.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 15,
+   "title": "Critique, repair and review again, until you are satisfied",
+   "intro": "`film-critic` runs as an independent subagent. The source can be a Scribe, a recorded video, a screenplay or just a video brief, given as a file, a URL, pasted text or the current session (the default). Menu 16 (mode `loop`) runs these steps for you.",
+   "steps": [
+    {
+     "t": "Take in the content. Which source, and run timings or an earlier version, if any. The subagent reads the Scribe or brief in full, or watches the recorded video (stills at every cut, the sound and the transcript), before it judges anything.",
+     "ask": true,
+     "skills": [
+      "film-critic"
+     ]
+    },
+    {
+     "t": "Critique. The video-critique subagent writes its critique and ends with numbered recommended changes, each with its position (S#C#F#, timestamp or brief section).",
+     "ask": false,
+     "skills": [
+      "film-critic"
+     ]
+    },
+    {
+     "t": "Repair what you approve. Which recommended changes to make (numbers, all or none), and any changes of your own. By default they go to a second agent (agent 2) to make; or the critique subagent makes them itself and asks you to approve each one. The result is a new version next to the original, with every ID and file name kept and nothing changed that you did not approve. A recorded video is repaired in its Scribe, then recorded again.",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "Balcony review. Menu 16B: the Siskel & Ebert style review of the repaired version, with two invented critics, each one's thumbs up or down, the 1-to-10 scores on story, characters, dialogue, pacing, pictures and camera, sound and music, and ending, and the final edit score (0 to 100) with its history across loops.",
+     "ask": false,
+     "skills": [
+      "film-critic"
+     ]
+    },
+    {
+     "t": "Loop. Repeat steps 2 to 4 until you say you are satisfied. You can add changes of your own at any point; they are carried into the next review, which checks that each was made and judges it like the rest of the work.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 16,
+   "title": "A fuller soundscape",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Which Scribe or sound brief (file, URL, paste or this chat), and a completed run's .txt or .srt for real timings, if any.",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "soundscape (menu 15). The subagent returns the plan, scene by scene (or cue by cue), and the list of sounds to make, with a prompt for each.",
+     "ask": false,
+     "skills": [
+      "soundscape"
+     ]
+    },
+    {
+     "t": "Make the sounds (a sound-effect or music generator) and save them under the plan's file names in audio/ next to the Scribe.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Run soundscape again with apply yes: a new Scribe version that only adds the sounds, as file: paths.",
+     "ask": false,
+     "skills": [
+      "soundscape"
+     ]
+    },
+    {
+     "t": "In VoiceTalker: open it, Batch Media, Sounds Upload tab, Start; then fine-tune volume, timing and fades in the Sounds view; save.",
+     "ask": false,
+     "skills": []
+    }
+   ]
+  },
+  {
+   "n": 17,
+   "title": "Pick, run and track the skills from the app",
+   "intro": "",
+   "steps": [
+    {
+     "t": "Open app/index.html in a browser (or https://cmwrx.github.io/BYOLLM/); which agents do you use?",
+     "ask": true,
+     "skills": []
+    },
+    {
+     "t": "BYOLLM Setup: install the skills in each agent, tick Installed, and choose Agent 1 (writes) and Agent 2 (reviews).",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Home: pick what you have, or a skill in the skills menu; fill its fields; copy the prompt, or open the agent with it.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Run it in the agent; add it to your run order and tick it off when it saves its file.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "Load any scenario into the run order and follow it, in any order, as many times as you like.",
+     "ask": false,
+     "skills": []
+    },
+    {
+     "t": "After any change to the skills or the app, codeumentation (menu 17) brings every guide, menu and package up to date.",
+     "ask": false,
+     "skills": [
+      "codeumentation"
+     ]
+    }
+   ]
+  }
+ ],
+ "codeumentation": {
+  "definition": "Codeumentation is code and documentation treated as one deliverable. A change is not finished until every place that describes it says the same thing as the code. “Update the codeumentation” is the one-line command for that whole pass.",
+  "touches": [
+   "Code, its types and schemas",
+   "READMEs and workflow docs",
+   "Version lines, all one number",
+   "Counts, tables, usage blocks and menus",
+   "Install notes and requirements",
+   "In-app Help, current behaviour only",
+   "The changelog, one entry per release",
+   "Plugin manifests and rebuilt packages",
+   "Installed copies, or how to reinstall",
+   "Slides, decks and images",
+   "Related gaps the change exposes"
+  ],
+  "how": [
+   "Finish the change.",
+   "Say “update the codeumentation”, or run menu 17.",
+   "Answer its questions one at a time: the change (this chat by default), the mode (apply, or list only), the version.",
+   "It copies every file before changing it, updates only what the change touches, rebuilds the packages and runs the checks.",
+   "A subagent then looks for anything still out of date, any over-reach and any drift from your intent.",
+   "Read the report: what changed, what was checked, and what was not updated and why."
+  ]
+ }
+}

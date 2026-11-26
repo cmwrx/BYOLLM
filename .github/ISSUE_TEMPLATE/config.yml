@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: VoiceTalker help and accounts
+    url: https://voicetalker.ai
+    about: Questions about VoiceTalker Studio, plans and your account
+  - name: Report a security problem
+    url: https://github.com/cmwrx/BYOLLM/security/advisories/new
+    about: Report it privately, never in a public issue

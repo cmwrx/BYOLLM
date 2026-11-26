@@ -1,0 +1,238 @@
+{
+  "schema": "voicetalker.scribe.image-manifest.v1",
+  "version": "3.2.8",
+  "sourceScribe": "source-file.json",
+  "aspectRatio": "16:9",
+  "imagesPerClip": 3,
+  "generationPolicy": {
+    "oneImagePerFrame": true,
+    "oneAudioClipPerDialogueClip": true,
+    "supportedAspectRatios": [
+      "16:9",
+      "9:16",
+      "1:1"
+    ],
+    "defaultAspectRatio": "16:9",
+    "sourcePreservation": "complete original scene, clip, text, TTS/prosody, settings and broadcast segments",
+    "masterWorkflow": "one approved master F1; F2 derived from F1/master; F3 cumulative progression of F2 on identical base",
+    "renderingMode": "layered_or_masked_edits_preferred",
+    "titleRendering": "exact stable overlay",
+    "imageAlignmentStatus": "unverified_until_script_qc",
+    "actorCoordinator": "match speaker on every frame and measure final-image mouth or null",
+    "speechBubbleRendering": "per-frame optional overlay",
+    "runtimeMultiFrameSupport": "unknown_until_source_inspection",
+    "sequentialNavigation": {
+      "command": "n",
+      "advance": "next_accepted_clip",
+      "indices": "S#C#F#",
+      "cursorAfterQcPass": true
+    }
+  },
+  "characterRegistry": {
+    "actor-id-1": {
+      "speakerNames": [
+        "Speaker"
+      ],
+      "referenceAssetId": null,
+      "identityVerified": false
+    }
+  },
+  "scenes": [
+    {
+      "sceneId": "scene-id-from-source",
+      "ordinal": 1,
+      "title": "Preserve original exact title",
+      "type": "intro|narrative|promo|ad|outro",
+      "clips": [
+        {
+          "clipId": "clip-id-from-source",
+          "ordinal": 1,
+          "speaker": "Speaker",
+          "dialogue": "Preserve exact existing clip text",
+          "flipbookPolicy": {
+            "frameCount": 3,
+            "masterCompositionId": "clip-id-from-source-master",
+            "cameraLockedAcrossFrames": true,
+            "stationaryGeometryLockedAcrossFrames": true,
+            "titlePlacementLockedAcrossFrames": true,
+            "sourceMasterId": null,
+            "motionMasks": [],
+            "lightingMasks": [],
+            "pixelQc": "unverified"
+          },
+          "frames": [
+            {
+              "frameId": "clip-id-from-source-a",
+              "ordinal": 1,
+              "role": "establish",
+              "imageId": "clip-id-from-source-a.png",
+              "aspectRatio": "16:9",
+              "targetResolution": "1920x1080",
+              "prompt": "Specific project/scene/speaker master prompt or cumulative derivative instruction",
+              "negativePrompt": "collage, jump cut, recomposition, changed actor identity, changed fixed object geometry",
+              "continuity": {
+                "masterCompositionId": "clip-id-from-source-master",
+                "sourceFrameId": null,
+                "staticRegionsLocked": true,
+                "effectState": "explicit per-frame changes only"
+              },
+              "timing": {
+                "startFraction": 0.0,
+                "endFraction": 0.333333,
+                "startSeconds": null,
+                "durationSeconds": null
+              },
+              "mouthCoordinates": null,
+              "mouth": {
+                "actorId": "actor-id-1",
+                "speaker": "Speaker",
+                "status": "unverified",
+                "normalized": {
+                  "x": null,
+                  "y": null
+                },
+                "sourceImageWidth": null,
+                "sourceImageHeight": null,
+                "origin": "top-left",
+                "reason": null
+              },
+              "speechBubbleCoordinates": null,
+              "speechBubble": {
+                "enabled": false,
+                "textSource": "clip.dialogue",
+                "position": {
+                  "x": null,
+                  "y": null
+                },
+                "tailTarget": null,
+                "placementMode": "hidden",
+                "status": "unverified",
+                "sourceFitTransform": null
+              },
+              "imageStatus": "not_generated",
+              "alignmentStatus": "unverified",
+              "qualityEvidence": null
+            },
+            {
+              "frameId": "clip-id-from-source-b",
+              "ordinal": 2,
+              "role": "develop",
+              "imageId": "clip-id-from-source-b.png",
+              "aspectRatio": "16:9",
+              "targetResolution": "1920x1080",
+              "prompt": "Specific project/scene/speaker master prompt or cumulative derivative instruction",
+              "negativePrompt": "collage, jump cut, recomposition, changed actor identity, changed fixed object geometry",
+              "continuity": {
+                "masterCompositionId": "clip-id-from-source-master",
+                "sourceFrameId": "clip-id-from-source-a",
+                "staticRegionsLocked": true,
+                "effectState": "explicit per-frame changes only"
+              },
+              "timing": {
+                "startFraction": 0.333333,
+                "endFraction": 0.666667,
+                "startSeconds": null,
+                "durationSeconds": null
+              },
+              "mouthCoordinates": null,
+              "mouth": {
+                "actorId": "actor-id-1",
+                "speaker": "Speaker",
+                "status": "unverified",
+                "normalized": {
+                  "x": null,
+                  "y": null
+                },
+                "sourceImageWidth": null,
+                "sourceImageHeight": null,
+                "origin": "top-left",
+                "reason": null
+              },
+              "speechBubbleCoordinates": null,
+              "speechBubble": {
+                "enabled": false,
+                "textSource": "clip.dialogue",
+                "position": {
+                  "x": null,
+                  "y": null
+                },
+                "tailTarget": null,
+                "placementMode": "hidden",
+                "status": "unverified",
+                "sourceFitTransform": null
+              },
+              "imageStatus": "not_generated",
+              "alignmentStatus": "unverified",
+              "qualityEvidence": null
+            },
+            {
+              "frameId": "clip-id-from-source-c",
+              "ordinal": 3,
+              "role": "resolve",
+              "imageId": "clip-id-from-source-c.png",
+              "aspectRatio": "16:9",
+              "targetResolution": "1920x1080",
+              "prompt": "Specific project/scene/speaker master prompt or cumulative derivative instruction",
+              "negativePrompt": "collage, jump cut, recomposition, changed actor identity, changed fixed object geometry",
+              "continuity": {
+                "masterCompositionId": "clip-id-from-source-master",
+                "sourceFrameId": "clip-id-from-source-b",
+                "staticRegionsLocked": true,
+                "effectState": "explicit per-frame changes only"
+              },
+              "timing": {
+                "startFraction": 0.666667,
+                "endFraction": 1.0,
+                "startSeconds": null,
+                "durationSeconds": null
+              },
+              "mouthCoordinates": null,
+              "mouth": {
+                "actorId": "actor-id-1",
+                "speaker": "Speaker",
+                "status": "unverified",
+                "normalized": {
+                  "x": null,
+                  "y": null
+                },
+                "sourceImageWidth": null,
+                "sourceImageHeight": null,
+                "origin": "top-left",
+                "reason": null
+              },
+              "speechBubbleCoordinates": null,
+              "speechBubble": {
+                "enabled": false,
+                "textSource": "clip.dialogue",
+                "position": {
+                  "x": null,
+                  "y": null
+                },
+                "tailTarget": null,
+                "placementMode": "hidden",
+                "status": "unverified",
+                "sourceFitTransform": null
+              },
+              "imageStatus": "not_generated",
+              "alignmentStatus": "unverified",
+              "qualityEvidence": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "broadcastCoverage": {
+    "coldOpen": true,
+    "titleIntro": true,
+    "promos": "all existing",
+    "commercials": "all existing",
+    "outro": true,
+    "note": "Illustrative coverage schema; actual instances must be read from source"
+  },
+  "generationProgress": {
+    "lastAcceptedClipId": null,
+    "nextSceneId": null,
+    "nextClipId": null
+  }
+}

@@ -1,0 +1,58 @@
+VoiceTalker Scribe Skills (skill set v3.2.8, plugin voicetalker-skills 3.2.8, November 26, 2026)
+
+17 skills and a menu, in skills/.
+The VoiceTalker Agent Skills app is app/index.html: open it in a browser for the menu,
+setup for your own LLM (Claude, ChatGPT, Codex, Gemini, Grok, Copilot or any other)
+and the scenarios. Not sure which to run? Type /voicetalker-skills:menu (plugin) or /menu (loose folders).
+The full guide is README.md in docs/VOICETALKERS/SKILLS of the VoiceTalker project.
+
+Main line: characters (optional) -> scribe -> image-manifest
+  -> screen-cap / screen-cap-video (optional) -> merge-media
+  -> open in VoiceTalker (Load picture or video, Batch Media, save).
+Check any Scribe with scribe-reviewer, in a NEW session (it changes nothing unless you ask).
+Two subagents run on a Scribe or just a brief (file, URL, paste or this chat):
+  soundscape   a full soundscape plan; never changes a sound already there.
+  film-critic  video critique; Siskel & Ebert style balcony review with thumbs and an
+               edit score; the review-and-repair loop until you are satisfied.
+After any change: codeumentation (menu 17) updates the code and every doc it touches.
+
+Python 3.8 or later is needed by: image-manifest, merge-media, videotalker-import, gen-svg, gen-gpt-images, gen-frames-manifest, screen-cap, screen-cap-video.
+Check with: python3 --version. screen-cap and screen-cap-video also need Google Chrome and Pillow;
+screen-cap-video also needs ffmpeg.
+Pillow is the Python picture library the screen-capture scripts use to crop and save shots.
+  Check:   python3 -c "import PIL; print(PIL.__version__)"
+  Install: python3 -m pip install Pillow   (or add --user if pip says "externally-managed-environment")
+
+Install as one plugin (plugin.json, .claude-plugin/ and .codex-plugin/ are at the top of this folder):
+  Claude Code     claude plugin marketplace add cmwrx/BYOLLM
+                  claude plugin install voicetalker-skills@byollm
+                  (or load this folder: claude --plugin-dir <this folder>)
+  Codex           codex plugin marketplace add cmwrx/BYOLLM, then install VoiceTalker Skills
+                  from the plugin directory
+  Claude app      open voicetalker-skills.plugin from github.com/cmwrx/BYOLLM/releases/latest
+  The app online  https://cmwrx.github.io/BYOLLM/
+  Skills are then named with the plugin prefix, for example /voicetalker-skills:scribe.
+
+Or install the loose skill folders (open a terminal in this folder; always copy whole folders):
+  Claude Code     cp -R skills/* ~/.claude/skills/
+  Codex           cp -R skills/* ~/.agents/skills/
+  Claude desktop  Zip each folder, then Settings > Capabilities > Skills > upload each zip:
+  or claude.ai      cd skills && for s in */; do zip -r "${s%/}.zip" "$s"; done
+
+Install the plugin or the loose folders, not both. Skills were renamed without the voicetalker- prefix: remove old voicetalker-* folders or skills first.
+
+Check it worked: start a NEW session and ask "What skills do you have for VoiceTalker?"
+All 17 skill names and menu should appear. After updating a skill, start a new session.
+
+Use (one line per step, replace the file names with yours):
+  Use characters on my-story.txt
+  Use scribe on my-story.txt with the cast file my-story-cast.md
+  Use scribe-reviewer on my-story-scribe-v1.00.json with the source my-story.txt
+  Use image-manifest on my-story-scribe-v1.00.json with the cast file my-story-cast.md
+  Use merge-media on my-story-scribe-v1.00.json with my-story-image-manifest.md
+  Use soundscape on my-story-scribe-v1.01.json
+  Use film-critic on my-story-scribe-v1.01.json in balcony mode
+
+Then in VoiceTalker: File > Open the ...-scribe-v1.01.json file, press Load picture or video if the plan
+attached files, open Batch Media, press Start, and save.
+(C) 2026 Cloud Media Works, LLC

@@ -1,0 +1,32 @@
+VoiceTalker Plugins and Skills License
+Version 1.1
+
+Copyright © 2026 Cloud Media Works LLC d/b/a Centerbeam AI.
+
+Cloud Media Works LLC d/b/a Centerbeam AI grants anyone who obtains a copy of the plugins, skills, and accompanying files released under this license permission, free of charge, to install, copy, configure, use, and privately modify them solely for workflows that use VoiceTalker.ai or its authorized services and interfaces, including testing and preparation for those workflows. This permission applies to personal and commercial use, including client work. You may use compatible third-party hosts, including AI assistants, to run these workflows.
+
+You may provide copies to employees and contractors working on your behalf under these terms. Preserve this copyright notice and license in every copy and modified version. You may share links to the official releases. Any other redistribution, resale, or sublicensing requires prior written permission. Standalone use unrelated to VoiceTalker and use with another product or service as a substitute for VoiceTalker are outside this grant. All rights not expressly granted are reserved.
+
+Developer Contributions
+
+You may develop modifications, enhancements, plugins, skills, documentation, and other contributions to the licensed files and submit them to Cloud Media Works LLC d/b/a Centerbeam AI (the Company) for consideration. This includes sharing proposed changes with the Company through authorized repositories and contribution channels. Submission does not authorize public redistribution or inclusion in an official release.
+
+The Company retains sole discretion, exercised by its authorized representatives, to approve, reject, modify, integrate, publish, distribute, license, commercialize, or discontinue any contribution. No contribution becomes part of an official release without the Company's approval.
+
+Unless otherwise agreed in writing, contributors retain ownership of their original contributions. By intentionally submitting a contribution for inclusion in the package under these terms, each contributor grants the Company a perpetual, worldwide, irrevocable, nonexclusive, royalty-free, transferable, sublicensable copyright license to reproduce, modify, create derivative works of, publicly display, publicly perform, distribute, and otherwise exploit that contribution, including in proprietary, free, and paid products and services. Each contributor also grants the Company and recipients of its authorized distributions a perpetual, worldwide, irrevocable, royalty-free patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the contribution, limited to patent claims the contributor can license that are necessarily infringed by the contribution alone or by its combination with the package to which it was submitted.
+
+Contributors represent that they have the authority to grant these rights and must disclose any applicable third-party rights, dependencies, or license restrictions before submission. Contributions containing terms incompatible with these rights may not be incorporated without separate written authorization from the Company and any necessary rights holders. No compensation, royalties, revenue sharing, equity, employment, or partnership is implied by submission or acceptance of a contribution. Any such arrangement requires a separate written agreement.
+
+Commercial Editions and Future Releases
+
+The Company expressly reserves the right to develop, offer, license, distribute, and commercialize future versions, updates, plugins, skills, enhancements, and services, including contributions accepted under this license, under free, paid, subscription-based, proprietary, or other licensing terms selected by the Company.
+
+The free-of-charge permissions granted by this license apply only to the copies and versions expressly released under it. Nothing in this license requires the Company to release future versions, updates, premium skills, or additional components free of charge, provide ongoing maintenance or support, or make future source materials available. Paid components may be distributed alongside freely licensed components within the same package, provided their applicable licensing terms are identified separately.
+
+Changes to licensing terms for future releases do not retroactively revoke permissions granted for copies previously released under this license, subject to compliance with the terms applicable to those copies. Receipt of a contribution or participation in development does not confer entitlement to future paid components or releases without charge.
+
+VoiceTalker access and third-party components and services are governed by their separate terms. This license grants no trademark rights and places no additional restrictions on using or sharing outputs from permitted workflows, except to the extent they reproduce the licensed files. Nothing in this license limits rights that applicable law makes nonwaivable.
+
+The permissions granted under this license terminate automatically upon material breach. If your permissions terminate, stop using the licensed files and delete all copies and modified versions under your control, except where retention is required by law.
+
+To the fullest extent permitted by applicable law, the licensed files are provided “as is,” without express, implied, or statutory warranties, including merchantability, fitness for a particular purpose, and noninfringement. To the fullest extent permitted by applicable law, the copyright holder is not liable for claims, damages, or other liability arising from the licensed files or their use, whether in contract, tort, or otherwise.
